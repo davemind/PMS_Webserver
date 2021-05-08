@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Driver Page</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="static/menu-table/plugins/fontawesome-free/css/all.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="static/menu-table/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="static/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+</head>
+
+<script>
+function load(){
+	$.ajax({
+		url: "/bk/Driver/Menu",
+		type: "POST",
+		error: function (result) {
+			alert("There is a Problem, Try Again!");
+		},
+		success: function (result) {
+			var data = JSON.parse(result);
+			if(data['statusCode'] == '403'){
+				top.location="/"
+			}
+			else {
+				menu_items = data['menu_items']
+				table_items = data['table_items']
+				var menu = document.getElementById("menu");
+				for (var i = 0; i < menu_items.length; ++i) {
+					var item=document.createElement("li");
+					item.setAttribute("class","nav-item d-none d-sm-inline-block");
+					var A = document.createElement("A");
+					A.setAttribute("href", menu_items[i][1]);
+					A.setAttribute("class","nav-link");
+					A.appendChild(document.createTextNode(menu_items[i][0]));
+					item.appendChild(A);
+					menu.appendChild(item);
+				}
+				var tbody = document.getElementById("table").getElementsByTagName("tbody")[0];
+				for (var i = 0; i < table_items.length; ++i) {
+					var row = document.createElement("tr");
+					for (var j = 1; j < table_items[i].length; ++j) {
+						if (j == 3){
+							var data1 = document.createElement("td");
+							data1.innerHTML="<div><button class='faceShow'>...</button><div class='image' style='position: absolute; display: none;'><img src=" + table_items[i][j] + " alt='image' height='128' width='128'/></div></div>"
+							row.appendChild(data1);
+						}
+						else {
+							var data1 = document.createElement("td");
+							data1.appendChild(document.createTextNode(table_items[i][j]));
+							row.appendChild(data1);
+						}
+					}
+					var data1 = document.createElement("td");
+					var A_Edit = document.createElement("BUTTON");
+					A_Edit.setAttribute("class", "btn btn-link btnEdit");
+					A_Edit.setAttribute("style", "padding:5px;border: aliceblue;background: white;");
+					A_Edit.setAttribute("data-toggle", "modal");
+					A_Edit.setAttribute("data-target", "#PopupEdit");
+					A_Edit.setAttribute("driver_first_name", table_items[i][1]);
+					A_Edit.setAttribute("driver_last_name", table_items[i][2]);
+					A_Edit.setAttribute("driver_face", table_items[i][3]);
+					A_Edit.setAttribute("driver_number", table_items[i][5]);
+					A_Edit.setAttribute("driver_province", table_items[i][6]);
+					A_Edit.setAttribute("driver_DOB", table_items[i][7]);
+					A_Edit.setAttribute("driver_sex", table_items[i][8]);
+					A_Edit.setAttribute("driver_id", table_items[i][0]);
+					var image = document.createElement("img");
+					image.setAttribute("src", "static/images/icons/edit.png");
+					image.setAttribute("width", 20);
+					image.setAttribute("height", 20);
+					A_Edit.appendChild(image);
+					data1.appendChild(A_Edit);
+					var A_Edit = document.createElement("BUTTON");
+					A_Edit.setAttribute("class", "btn btn-link btnDelete");
+					A_Edit.setAttribute("style", "padding:5px;border: aliceblue;background: white;");
+					A_Edit.setAttribute("driver_id", table_items[i][0]);
+					var image = document.createElement("img");
+					image.setAttribute("src", "static/images/icons/delete.jpg");
+					image.setAttribute("width", 20);
+					image.setAttribute("height", 20);
+					A_Edit.appendChild(image);
+					data1.appendChild(A_Edit);
+					row.appendChild(data1);
+					tbody.appendChild(row);
+				};
+				
+				$(".btnEdit").on("click", function () {
+					$("#driver_first_name").val($(this).attr("driver_first_name"));
+					$("#driver_last_name").val($(this).attr("driver_last_name"));
+					var image = document.getElementById("driver_face");
+					image.setAttribute("src", $(this).attr("driver_face"));
+					$("#driver_number").val($(this).attr("driver_number"));
+					$("#driver_province").val($(this).attr("driver_province"));
+					$("#driver_DOB").val($(this).attr("driver_DOB"));
+					document.getElementById("driver_sex").value = $(this).attr("driver_sex");
+					$("#driver_id").val($(this).attr("driver_id"));
+					$("#driver_face_url").val("driver_face");
+				});
+				
+				$(".btnDelete").on("click", function () {
+					DriverDelete($(this).attr("driver_id"));
+				});
+				
+				$(".faceShow").click(function () {
+					$(this).parent('div').children('div.image').show();
+				});
+				$(".faceShow").mouseleave(function(){
+					$(this).parent('div').children('div.image').hide();
+				});
+
+				$("#table").DataTable({
+				  "paging": true,
+				  "lengthChange": true,
+				  "fixedHeader": true,
+				  "ordering": true,
+				  "aLengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, 'All']],
+				  "info": true,
+				  "autoWidth": false,
+				  "responsive": true,
+				});
+			}
+		},
+	});
+}
+</script>
+
+<!-- calendar style -->
+<body  class="hold-transition sidebar-mini" onload="load()">
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav" id="menu">
+    </ul>
+  </nav>	
+  <div class="card-body">
+	<table id="table" class="table table-bordered table-hover" style="text-align: center; width:100%; table-layout: fixed; overflow-wrap: anywhere;">
+	  <thead>
+	  <tr>
+		<th style="width:11%;">First name</th>
+		<th style="width:11%;">Last name</th>
+		<th style="width:11%;">face</th>
+		<th style="width:11%;">Expiry date</th>
+		<th style="width:11%;">Driver number</th>
+		<th style="width:11%;">Province</th>
+		<th style="width:11%;">DOB</th>
+		<th style="width:11%;">Sex</th>
+		<th style="width:12%;">Action</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+	  </tbody>
+	</table>
+  </div>
+  <div class="card-footer">
+	<button class="btn btn-primary float-right" data-toggle="modal" data-target="#PopupAdd">Add</button>
+  </div>
+
+    <div class="modal fade" id="PopupEdit" tabindex="-1" role="dialog" aria-labelledby="view_4label" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="height:540px; max-width:500px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align: center; font-size: 2vw">
+					<h4 style="text-align: left;">Edit Driver Info</><br><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">First name</label>
+					<input id="driver_first_name" type='text' style="font-size: 15px;width: 250px;font-weight: normal;" value=""/><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">Last name</label>
+					<input id="driver_last_name" type='text' style="font-size: 15px;width: 250px;font-weight: normal;" value=""/><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">Driver Number</label>
+					<input id="driver_number" type='text' style="font-size: 15px;width: 250px;font-weight: normal;" value=""/><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">Province</label>
+					<input id="driver_province" type='text' style="font-size: 15px;width: 250px;font-weight: normal;" value=""/><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">DOB</label>
+					<input id="driver_DOB" type='text' style="font-size: 15px;width: 250px;font-weight: normal;" class="DOB" value=""/><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">Sex</label>
+					<select id="driver_sex" class="select_value" style="font-size: 15px;width: 250px;font-weight: normal;">
+						<option value="male">male</option>
+						<option value="female">female</option>
+					</select><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">face</label>
+					<input style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;" type="file" accept=".jpg, .jpeg, .png" class="add_image"><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;visibility: hidden">face</label>
+					<img id="driver_face" width="128" height="128"/>
+					<input id="driver_id" type='text' style="font-size: 15px;width: 250px;font-weight: normal;display:none;" value=""/><br>
+					<input id="driver_face_url" type='text' style="font-size: 15px;width: 250px;font-weight: normal;display:none;" value=""/><br>
+                </div>
+				<div class="card-footer">
+					<button type="button" class="btn btn-primary float-right" onclick="driver_edit()">Submit</button>
+				</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="PopupAdd" tabindex="-1" role="dialog" aria-labelledby="view_4label" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="height:540px; max-width:500px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align: center; font-size: 2vw">
+					<h4 style="text-align: left;">Add Driver</><br><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">First name</label>
+					<input id="driver_first_name_a" type='text' style="font-size: 15px;width: 250px;font-weight: normal;" value=""/><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">Last name</label>
+					<input id="driver_last_name_a" type='text' style="font-size: 15px;width: 250px;font-weight: normal;" value=""/><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">Driver Number</label>
+					<input id="driver_number_a" type='text' style="font-size: 15px;width: 250px;font-weight: normal;" value=""/><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">Province</label>
+					<input id="driver_province_a" type='text' style="font-size: 15px;width: 250px;font-weight: normal;" value=""/><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">DOB</label>
+					<input id="driver_DOB_a" type='text' style="font-size: 15px;width: 250px;font-weight: normal;" class="DOB" value=""/><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">Sex</label>
+					<select id="driver_sex_a" class="select_value" style="font-size: 15px;width: 250px;font-weight: normal;">
+						<option value="male">male</option>
+						<option value="female">female</option>
+					</select><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;">face</label>
+					<input style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;" type="file" accept=".jpg, .jpeg, .png" class="add_image_a"><br>
+					<label style="text-align: right;width: 150px;font-size: 20px;font-weight: normal;visibility: hidden">face</label>
+					<img id="driver_face_a" width="128" height="128"/>
+                </div>
+				<div class="card-footer">
+					<button type="button" class="btn btn-primary float-right" onclick="driver_add()">Submit</button>
+				</div>
+            </div>
+        </div>
+    </div>
+	
+<!-- jQuery -->
+<script src="static/menu-table/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="static/menu-table/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables  & Plugins -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css" />
+
+<script src="static/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+	$('.DOB').datepicker({
+		todayHighlight: true,
+		format: "dd/mm/yyyy",
+	});
+
+	$(".add_image").change(function () {
+		if (this.files && this.files[0]){
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				$('#driver_face').attr('src', e.target.result);
+				$("#driver_face_url").val("");
+			}
+			reader.readAsDataURL(this.files[0]);
+		}
+	});
+	function check_inputs(values){
+		var check = false;
+		for (var i = 0; i < values.length; ++i){
+			if (values[i] == ''){check = true; break;}
+		}
+		return check
+	};
+	function driver_edit() {
+		var driver_first_name = $("#driver_first_name").val().trim();
+		var driver_last_name = $("#driver_last_name").val().trim();
+		var driver_number = $("#driver_number").val().trim();
+		var driver_province = $("#driver_province").val().trim();
+		var driver_DOB = $("#driver_DOB").val().trim();
+		var driver_sex = $("#driver_sex").val();
+		var driver_id = $("#driver_id").val().trim();
+		var driver_face_url = $("#driver_face_url").val().trim();
+		var driver_face_data = document.getElementById("driver_face").src;
+		if (check_inputs([driver_first_name, driver_last_name, driver_number, driver_province, driver_DOB])){
+			alert('Some item is empty!');
+		}
+		else{
+			$.ajax({
+				url: "/bk/Driver",
+				type: "PUT",
+				data: {
+					driver_first_name: driver_first_name,
+					driver_last_name: driver_last_name,
+					driver_number: driver_number,
+					driver_province: driver_province,
+					driver_DOB: driver_DOB,
+					driver_sex: driver_sex,
+					driver_id: driver_id,
+					driver_face_data: driver_face_data,
+					driver_face_url: driver_face_url,
+				},
+				error: function (result) {
+					alert("There is a Problem, Try Again!");
+				},
+				success: function (result) {
+					var data = JSON.parse(result);
+					if(data['statusCode'] == '400'){
+						if(data['message'] == 'driver_number'){
+							alert("Driver Number is duplicated with other, Try Again!");
+						}
+						else if(data['message'] == 'driver_DOB'){
+							alert("Driver's DOB is invalid, Try Again!");
+						}
+					}
+					else {
+						location.reload();
+					}
+				}
+			});
+		}
+	};
+	function DriverDelete(driver_id) {
+		$.ajax({
+			url: "/bk/Driver",
+			type: "DELETE",
+			data: {
+				driver_id: driver_id,
+			},
+			error: function (result) {
+				alert("There is a Problem, Try Again!");
+			},
+			success: function (result) {
+				location.reload();
+			}
+		});
+	};
+	$(".add_image_a").change(function () {
+		if (this.files && this.files[0]){
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				$('#driver_face_a').attr('src', e.target.result);
+			}
+			reader.readAsDataURL(this.files[0]);
+		}
+	});
+	function driver_add() {
+		var driver_first_name = $("#driver_first_name_a").val().trim();
+		var driver_last_name = $("#driver_last_name_a").val().trim();
+		var driver_number = $("#driver_number_a").val().trim();
+		var driver_province = $("#driver_province_a").val().trim();
+		var driver_DOB = $("#driver_DOB_a").val().trim();
+		var driver_sex = $("#driver_sex_a").val();
+		var driver_face_data = document.getElementById("driver_face_a").src;
+		if (check_inputs([driver_first_name, driver_last_name, driver_number, driver_province, driver_DOB, driver_face_data])){
+			alert('Some item is empty!');
+		}
+		else{
+			$.ajax({
+				url: "/bk/Driver",
+				type: "POST",
+				data: {
+					driver_first_name: driver_first_name,
+					driver_last_name: driver_last_name,
+					driver_number: driver_number,
+					driver_province: driver_province,
+					driver_DOB: driver_DOB,
+					driver_sex: driver_sex,
+					driver_face_data: driver_face_data,
+				},
+				error: function (result) {
+					alert("There is a Problem, Try Again!");
+				},
+				success: function (result) {
+					var data = JSON.parse(result);
+					if(data['statusCode'] == '400'){
+						if(data['message'] == 'driver_number'){
+							alert("Driver Number is duplicated with other, Try Again!");
+						}
+						else if(data['message'] == 'driver_DOB'){
+							alert("Driver's DOB is invalid, Try Again!");
+						}
+					}
+					else {
+						location.reload();
+					}
+				}
+			});
+		}
+	};
+</script>
+</body>
+</html>
