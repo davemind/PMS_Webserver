@@ -126,7 +126,7 @@ IVMS.Videos = function () {
 			hoverStateEnabled: true,			
 			onRowRemoving: function(e) {
 				$.ajax({
-                    url: "/Video/Delete",
+                    url: "/bk/Video/Delete",
 					type:"Delete",
 					data: {"id":e.data.id},
 					error: function (result) {
@@ -168,7 +168,7 @@ IVMS.Videos = function () {
 
     self.init = function () {
 		$('#exportPdfButton').dxButton({
-			icon: '/devexpress/icon/pdf1.png',
+			icon: 'static/images/icons/pdf1.png',
 			text: 'Export to PDF',
 			onClick: function() {
 			  const doc = new jsPDF();
@@ -181,7 +181,7 @@ IVMS.Videos = function () {
 			}
 		});
 		$('#exportxlsxButton').dxButton({
-			icon: '/devexpress/icon/excel1.png',
+			icon: 'static/images/icons/excel1.png',
 			text: 'Export to xlsx',
 			onClick: function() {
 				var workbook = new ExcelJS.Workbook(); 
@@ -211,7 +211,7 @@ IVMS.Videos = function () {
 		grid.beginCustomLoading();
 		
 		$.ajax({
-            url: "/Video/GetAllVideos",
+            url: "/bk/Video/GetAllVideos",
 			data: loadOptions,
 			error: function (result) {
 				grid.endCustomLoading();
