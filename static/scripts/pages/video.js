@@ -75,7 +75,7 @@ IVMS.Videos = function () {
 					allowSorting: false,
 					cellTemplate: function (container, options) {
 						$("<div>")
-							.append($("<img>", { "src": options.value }))
+							.append($("<img>", { "src": "/static" + options.value }))
 							.appendTo(container);
 					}
                 },
@@ -156,7 +156,7 @@ IVMS.Videos = function () {
             contentTemplate: function() {
                 return $("<div/>").append(
 					$("<p>" + video_data.video_filename + "</p>"),
-                    $("<video id='video_img' width='480' height='360' controls='controls' autoplay='' style='margin: 3px;' src=" + video_data.video_filename + "> </video>")
+                    $("<video id='video_img' width='480' height='360' controls='controls' autoplay='' style='margin: 3px;' src=/static" + video_data.video_filename + "> </video>")
                 );
             },
             showTitle: true,
