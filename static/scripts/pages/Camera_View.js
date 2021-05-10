@@ -16,7 +16,7 @@ function myFunction() {
 			for (var i = st_index; i < Math.min(cameras.length, st_index + 6); ++i) {
 				var j = i % 6 + 1;
 				document.getElementById("camera_name" + j.toString()).textContent = cameras[i].camera_name;
-				$("#camera_url" + j.toString()).attr("src", "/video_feed" + j.toString() + "?url=" + cameras[i].camera_url)
+				$("#camera_url" + j.toString()).attr("src", "http://localhost:5001/video_feed" + j.toString() + "?url=" + cameras[i].camera_url)
 			}
 		}
 	});	
