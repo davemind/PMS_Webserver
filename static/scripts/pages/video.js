@@ -126,8 +126,8 @@ IVMS.Videos = function () {
 			hoverStateEnabled: true,			
 			onRowRemoving: function(e) {
 				$.ajax({
-                    url: "/bk/Video/Delete",
-					type:"Delete",
+                    url: "/bk/Video",
+					type: "DELETE",
 					data: {"id":e.data.id},
 					error: function (result) {
 						alert("There is a Problem, Try Again!");
@@ -218,7 +218,7 @@ IVMS.Videos = function () {
 				alert("There is a Problem, Try Again!");			
 			},
 			success: function (result) {
-				var res = result;
+				var res = JSON.parse(result);
 				grid.option("dataSource", { store: res});
 				grid.endCustomLoading();
 				$(window).resize(function () {

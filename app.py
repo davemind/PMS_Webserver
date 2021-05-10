@@ -121,6 +121,12 @@ def bk_camera_delete():
 	update_record(sql_command, camera_id)
 	return json.dumps(success_200_message('ok'))
 
+@app.route('/bk/Video', methods=['DELETE'])
+def bk_Video_delete():
+	camera_id = request.form.get('id')
+	sql_command = 'delete from `videos` WHERE `id` = %s'
+	update_record(sql_command, camera_id)
+	return json.dumps(success_200_message('ok'))
 
 ############################   menu   ############################
 usual_menu_items = ['Camera', 'Camera_View', 'Video', 'Log_out']
@@ -162,6 +168,11 @@ def bk_Camera_View():
 	sql_command = 'select `camera_name`, `camera_url` from `cameras` where `user_id` = %s and state = %s' % (session['user_id'], '1')
 	return json.dumps(get_full_data(sql_command))
 
+@app.route('/bk/Video/GetAllVideos', methods=['GET'])
+def bk_Video_GetAllVideos():
+	sql_command = 'select * from `videos`'# where `user_id` = %s' % session['user_id']
+	return json.dumps(get_full_data(sql_command))
+
 
 ############################   web pages   ############################
 @app.route('/')
@@ -185,6 +196,10 @@ def fr_Camera():
 def fr_Camera_View():
 	return load_page('Camera_View')
 
+@app.route('/Video')
+def fr_Video():
+	return load_page('Video')
+
 @app.route('/Log_out')
 def Log_out():
 	session.clear()
@@ -201,6 +216,7 @@ class VideoCamera():
 
 	def get_frame(self):
 		success, image = self.video.read()
+		#ret, jpeg = cv2.imencode('.jpg', cv2.resize(image, (160, 90)))
 		ret, jpeg = cv2.imencode('.jpg', image)
 		return jpeg.tobytes()
 

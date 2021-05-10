@@ -13,11 +13,21 @@ function myFunction() {
 		success: function (result) {
 			st_index = 0;
 			cameras = JSON.parse(result);
-			for (var i = st_index; i < Math.min(cameras.length, st_index + 12); ++i) {
-				var j = i % 12 + 1;
+			for (var i = st_index; i < Math.min(cameras.length, st_index + 6); ++i) {
+				var j = i % 6 + 1;
 				document.getElementById("camera_name" + j.toString()).textContent = cameras[i].camera_name;
 				$("#camera_url" + j.toString()).attr("src", "/video_feed" + j.toString() + "?url=" + cameras[i].camera_url)
 			}
 		}
 	});	
+};
+
+function stop() {
+	$("#camera_url1").attr("src", "");
+	$("#camera_url2").attr("src", "");
+	$("#camera_url3").attr("src", "");
+	$("#camera_url4").attr("src", "");
+	$("#camera_url5").attr("src", "");
+	$("#camera_url6").attr("src", "");
+	top.location="/Camera"
 };
