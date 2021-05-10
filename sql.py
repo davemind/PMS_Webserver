@@ -1,7 +1,7 @@
 import pymysql
 
 def get_db_cursor():
-	db = pymysql.connect(host='192.168.1.131', user='root', db='container')
+	db = pymysql.connect(host='192.168.1.131', user='root', db='vms')
 	cur = db.cursor()
 	return db, cur
 

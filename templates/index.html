@@ -88,7 +88,11 @@
 				success: function (result) {
 					var data = JSON.parse(result);
 					if (data['statusCode'] == '200'){
-						top.location="/Gate_Transactions"
+						if (data['message'] == 'admin'){
+							top.location="/User"
+						} else {
+							top.location="/Camera"
+						}
 					} else {
 						if (data['message'] == 'user name'){
 							alert("Wrong user name!");

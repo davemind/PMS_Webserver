@@ -507,16 +507,16 @@ def bk_gate_delete():
 
 
 ############################   menu   ############################
-usual_menu_items = ['Gate_Transactions', 'Driver', 'Camera', 'Group_Camera', 'Gates']
-usual_menu_texts = ['Gate Trans', 'Driver', 'Camera', 'Group-Camera', 'Gates']
-admin_menu_items = ['Agent', 'Permission', 'Company', 'Black_White_List', 'Location_Site']
-admin_menu_texts = ['Agent', 'Permission', 'Company', 'B/W List', 'Loc/Site']
+usual_menu_items = ['Camera', 'Camera_View', 'Video']
+usual_menu_texts = ['Camera', 'Camera_View', 'Video']
+admin_menu_items = ['User']
+admin_menu_texts = ['User']
 @app.route('/bk/Menu', methods=['GET'])
 def get_menu_item():
 	if session.get('admin') is None:
 		return json.dumps(error_403_message('not login'))
-	menu_items = usual_menu_items + (admin_menu_items if session['admin'] else [])
-	menu_texts = usual_menu_texts + (admin_menu_texts if session['admin'] else [])
+	menu_items = (admin_menu_items if session['admin'] else []) + usual_menu_items
+	menu_texts = (admin_menu_texts if session['admin'] else []) + usual_menu_texts
 	menu_dict = []
 	for menu_item, menu_text in zip(menu_items, menu_texts):
 		menu_dict.append({
@@ -621,7 +621,7 @@ def fr_Driver():
 def fr_Group():
 	return load_page('Gates')
 
-@app.route('/Agent')
+@app.route('/User')
 def fr_User():
 	return load_page('Agent')
 

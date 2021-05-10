@@ -77,7 +77,7 @@ SaleViewer.Customers = function () {
 						visible: true,
 						onClick: function(e) {
 							video_data = e.row.data;
-
+							$("#video_img").attr("src", "");
 							self.showVideo(video_data);
 						},
 						onHidden: function(e) {
