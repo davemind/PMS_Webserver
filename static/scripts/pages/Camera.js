@@ -62,7 +62,7 @@ SaleViewer.Customers = function () {
 			},
 			summary: {
 				totalItems: [{
-					column: "name",
+					column: "camera_name",
 					summaryType: "count",
 				}]
 			},

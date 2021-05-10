@@ -157,6 +157,11 @@ def bk_Camera():
 	sql_command = 'select `id`, `camera_name`, `camera_url`, `server_url`, `state`, `location` from `cameras` where `user_id` = %s' % session['user_id']
 	return json.dumps(get_full_data(sql_command))
 
+@app.route('/bk/Camera_View', methods=['GET'])
+def bk_Camera_View():
+	sql_command = 'select `camera_name`, `camera_url` from `cameras` where `user_id` = %s and state = %s' % (session['user_id'], '1')
+	return json.dumps(get_full_data(sql_command))
+
 
 ############################   web pages   ############################
 @app.route('/')
@@ -175,6 +180,10 @@ def fr_User():
 @app.route('/Camera')
 def fr_Camera():
 	return load_page('Camera')
+
+@app.route('/Camera_View')
+def fr_Camera_View():
+	return load_page('Camera_View')
 
 @app.route('/Log_out')
 def Log_out():
@@ -227,6 +236,41 @@ def fr_video_feed4():
 
 @app.route('/video_feed5')
 def fr_video_feed5():
+	url = request.args.get('url')
+	return Response(gen(VideoCamera(url)), mimetype='multipart/x-mixed-replace; boundary=frame')  
+
+@app.route('/video_feed6')
+def fr_video_feed6():
+	url = request.args.get('url')
+	return Response(gen(VideoCamera(url)), mimetype='multipart/x-mixed-replace; boundary=frame')  
+
+@app.route('/video_feed7')
+def fr_video_feed7():
+	url = request.args.get('url')
+	return Response(gen(VideoCamera(url)), mimetype='multipart/x-mixed-replace; boundary=frame')  
+
+@app.route('/video_feed8')
+def fr_video_feed8():
+	url = request.args.get('url')
+	return Response(gen(VideoCamera(url)), mimetype='multipart/x-mixed-replace; boundary=frame')  
+
+@app.route('/video_feed9')
+def fr_video_feed9():
+	url = request.args.get('url')
+	return Response(gen(VideoCamera(url)), mimetype='multipart/x-mixed-replace; boundary=frame')  
+
+@app.route('/video_feed10')
+def fr_video_feed10():
+	url = request.args.get('url')
+	return Response(gen(VideoCamera(url)), mimetype='multipart/x-mixed-replace; boundary=frame')  
+
+@app.route('/video_feed11')
+def fr_video_feed11():
+	url = request.args.get('url')
+	return Response(gen(VideoCamera(url)), mimetype='multipart/x-mixed-replace; boundary=frame')  
+
+@app.route('/video_feed12')
+def fr_video_feed12():
 	url = request.args.get('url')
 	return Response(gen(VideoCamera(url)), mimetype='multipart/x-mixed-replace; boundary=frame')  
 

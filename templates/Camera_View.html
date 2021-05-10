@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<title>Camera View</title>
+	
+	<link rel="stylesheet/less" type="text/css" href="/static/css/site.less" />
+	<script src="static/js/less.js" ></script>
+	
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/20.2.4/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/20.2.4/css/dx.light.css" />
+	
+	<script src="static/js/jquery-3.5.1.min.js"></script>
+	<script src="static/js/dx.all.js"></script>
+	<script src="static/scripts/index.js"></script>
+	<script src="static/scripts/pages/topmenu.js"></script>
+	<script>
+		$(function () {
+			SaleViewer.criteria = "";
+			SaleViewer.baseApiUrl = "/bk/";
+		});
+	</script>
+	
+	<script src="static/scripts/pages/Camera_View.js"></script>
+	<style>
+		.item1 { grid-area: 1 / 1 / 2 / 2; }
+		.item2 { grid-area: 1 / 2 / 2 / 3; }
+		.item3 { grid-area: 1 / 3 / 2 / 4; }
+		.item4 { grid-area: 1 / 4 / 2 / 5; }
+
+		.grid-container {
+		  display: grid;
+		  grid-auto-columns: 360px;
+		  grid-auto-rows: 240px;
+		  grid-gap: 10px;
+		  background-color: #2196F3;
+		  padding: 10px;
+		}
+
+		.grid-container > div {
+		  background-color: rgba(255, 255, 255, 0.8);
+		  text-align: left;
+		  padding: 1px 10px;
+		  font-size: 10px;
+		}
+	</style>
+</head>
+<body id="salesviewer" onload="myFunction()">
+    <div class="page-content-wrapper">
+        <div class="page-content-push"></div>
+        <div id="header">
+            <div class="content">
+                <a class="logo indent" href="../"></a>
+                
+                <div class="menu">
+                    <div id="menu"></div>
+                    
+                    <div id="openPopupButton">
+                        <a><span class="info-link">?</span></a>
+                    </div>
+                   
+                </div>
+                <script>
+
+                    var activePageId = "" || "Camera_View",
+                    topMenu = new SaleViewer.TopMenu($("#menu"), activePageId, "");
+                    topMenu.init();
+                
+                </script>
+                </div>
+
+        </div>
+		<!-------------------------------Render Body Part---------------------------------------------------------------------------------->
+		<link rel="stylesheet" href="static/css/products.css" />
+
+		<div class="white">
+			<div class="content">
+				<div class="page" style="display: flex; align-items: center; justify-content: center;">
+					<div class="layout-box" >
+						<h3 class="indent">All Cameras</h3>
+						<div>
+							<div class="grid-container">
+								<div class="item1">
+									<p id='camera_name1'><br></p>
+									<img id='camera_url1' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+								<div class="item2">
+									<p id='camera_name2'><br></p>
+									<img id='camera_url2' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+								<div class='item3'>
+									<p id='camera_name3'><br></p>
+									<img id='camera_url3' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+								<div class='item4'>
+									<p id='camera_name4'><br></p>
+									<img id='camera_url4' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+								<div class='item5'>
+									<p id='camera_name5'><br></p>
+									<img id='camera_url5' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+								<div class='item6'>
+									<p id='camera_name6'><br></p>
+									<img id='camera_url6' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+								<div class='item7'>
+									<p id='camera_name7'><br></p>
+									<img id='camera_url7' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+								<div class='item8'>
+									<p id='camera_name8'><br></p>
+									<img id='camera_url8' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+								<div class='item9'>
+									<p id='camera_name9'><br></p>
+									<img id='camera_url9' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+								<div class='item10'>
+									<p id='camera_name10'><br></p>
+									<img id='camera_url10' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+								<div class='item11'>
+									<p id='camera_name11'><br></p>
+									<img id='camera_url11' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+								<div class='item12'>
+									<p id='camera_name12'><br></p>
+									<img id='camera_url12' width="336px" height="189px" src='static/images/no connected.jpg'/>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+</body>
+</html>
