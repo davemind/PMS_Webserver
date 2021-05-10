@@ -10,10 +10,16 @@ SaleViewer.Customers = function () {
         gridOptions = {
 			keyExpr: "id",
 			editing: {
-				mode: "row",
+				mode: "popup",
 				allowAdding: true,
 				allowUpdating: true,
 				allowDeleting: true,
+				popup: {
+					title: "User Info",
+					showTitle: true,
+					width: 670,
+					height: 255,
+				},
 				useIcons: true
 			},
             dataSource: {
@@ -62,121 +68,101 @@ SaleViewer.Customers = function () {
 			},
             columns: [
                 {
-                    dataField: "name",
+                    dataField: "camera_name",
 					alignment: "left",
+					validationRules: [{
+						type: "required",
+						message: "camera_name is required"
+					}],
+					width: "12%"
                 },
                 {
-                    dataField: "url",
-                    alignment: "center",
-                },{
-					type: "buttons",
-					width: 100, 
-					buttons: ["edit", "delete", {
-						hint: "Check",
-						icon: "video",
-						visible: true,
-						onClick: function(e) {
-							video_data = e.row.data;
-							$("#video_img").attr("src", "");
-							self.showVideo(video_data);
-						},
-						onHidden: function(e) {
-							$("#video_img").attr("src", "");
-						}
+                    dataField: "camera_url",
+					alignment: "left",
+					validationRules: [{
+						type: "required",
+						message: "camera_url is required"
 					}]
-				}
+                },
+                {
+                    dataField: "state",
+					alignment: "left",
+					validationRules: [{
+						type: "required",
+						message: "state is required"
+					}],
+					lookup: {
+						dataSource: [{'id': 0, 'title': 'off'}, {'id': 1, 'title': 'on'}],
+						displayExpr: "title",
+						valueExpr: "id"
+					},
+					width: "8%"
+                },
+                {
+                    dataField: "location",
+					alignment: "left",
+					validationRules: [{
+						type: "required",
+						message: "location is required"
+					}],
+					width: "10%"
+                },
  			],
 			showBorders: false,
 			columnAutoWidth:false,
             showColumnLines: true,
             showRowLines: false,
 			hoverStateEnabled: true,
-			width:500,
+			//width:500,
 			onRowInserting: function(e) {
 				var newData = e.data;
-				var empty = false;
-				if (Object.keys(e.data).length == 3){
-					for (var key in newData){
-						if (key == 'value'){
-							if (newData[key].trim() == ''){
-								empty = true;
-								break;
+				$.ajax({
+					url: "/bk/Camera",
+					type: "POST",
+					data: newData,
+					error: function (result) {
+						alert("There is a Problem, Try Again!");
+					},
+					success: function (result) {
+						var data = JSON.parse(result);
+						if(data['statusCode'] == '400'){
+							if(data['message'] == 'camera_name'){
+								alert("The name is duplicated with other, Try Again!");
+							}
+							else if(data['message'] == 'camera_url'){
+								alert("The url is duplicated with other, Try Again!");
 							}
 						}
+						location.reload();
 					}
-				}
-				else{
-					empty = true;
-				}
-				if (!empty){
-					$.ajax({
-						url: "/bk/Camera",
-						type: "POST",
-						data: newData,
-						error: function (result) {
-							alert("There is a Problem, Try Again!");
-						},
-						success: function (result) {
-							var data = JSON.parse(result);
-							if(data['statusCode'] == '400'){
-								if(data['message'] == 'camera_name'){
-									alert("The name is duplicated with other, Try Again!");
-								}
-								else if(data['message'] == 'camera_url'){
-									alert("The url is duplicated with other, Try Again!");
-								}
-								location.reload();
-							}
-						}
-					});
-				}
-				else{
-					alert('Some item is empty!');
-				}
-				e.cancel = empty;
-			},
-			onRowInserted: function(e) {
-				//console.log("RowInserted");
+				});
 			},
 			onRowUpdating: function(e) {
 				var newData = e.newData;
 				var fullData = e.key;
-				var empty = false;
 				for (var key in newData){
-						if (key == 'value'){
-							if (newData[key].trim() == ''){
-								empty = true;
-								break;
-							}
-						}
 					fullData[key] = newData[key];
 				}
-				if (!empty){
-					$.ajax({
-						url: "/bk/Camera",
-						type: "PUT",
-						data: fullData,
-						error: function (result) {
-							alert("There is a Problem, Try Again!");
-						},
-						success: function (result) {
-							var data = JSON.parse(result);
-							if(data['statusCode'] == '400'){
-								if(data['message'] == 'camera_name'){
-									alert("The name is duplicated with other, Try Again!");
-								}
-								else if(data['message'] == 'camera_url'){
-									alert("The url is duplicated with other, Try Again!");
-								}
-								location.reload();
+				$.ajax({
+					url: "/bk/Camera",
+					type: "PUT",
+					data: fullData,
+					error: function (result) {
+						alert("There is a Problem, Try Again!");
+					},
+					success: function (result) {
+						var data = JSON.parse(result);
+						if(data['statusCode'] == '400'){
+							if(data['message'] == 'camera_name'){
+								alert("The name is duplicated with other, Try Again!");
 							}
+							else if(data['message'] == 'camera_url'){
+								alert("The url is duplicated with other, Try Again!");
+							}
+							location.reload();
 						}
-					});
-				}
-				e.cancel = empty;
-			},
-			onRowUpdated: function(e) {
-				//console.log("RowUpdated");
+					}
+				});
 			},
 			onRowRemoving: function(e) {
 				$.ajax({
@@ -191,29 +177,7 @@ SaleViewer.Customers = function () {
 					}
 				});
 			},
-			onRowRemoved: function(e) {
-				//console.log("RowRemoved");
-			},
-			onSaving: function(e) {
-				//console.log("Saving");
-			},
-        },
-		video_data=null,
-		popupOptions = {
-            width: 600,
-            height: 480,
-            contentTemplate: function() {
-                return $("<div/>").append(
-					$("<p>" + video_data.name + "</p>"),
-                    $("<img id='video_img' width='480' height='270' autoplay='autoplay' style='margin: 3px;' src=/video_feed1?url=" + video_data.url + " />")
-                );
-            },
-            showTitle: true,
-            title: "Live Video",
-            visible: false,
-            dragEnabled: false,
-            closeOnOutsideClick: true
-		};
+        };
 
     self.init = function () {
 		
@@ -239,17 +203,6 @@ SaleViewer.Customers = function () {
 			}
 		});	
     };
-	self.showVideo = function(data) {
-        if(popup) {
-            popup.option("contentTemplate", popupOptions.contentTemplate.bind(this));
-        } else {
-            popup = $("#video_popup").dxPopup(popupOptions).dxPopup("instance");
-        }
-
-        popup.show();
-    };
-        
-   
 };
 $(function () {
     SaleViewer.customers = new SaleViewer.Customers();

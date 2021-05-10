@@ -17,9 +17,10 @@ def bk_user_login():
 	password = request.form.get('password')
 	result_dict = log_in(user_name, password)
 	if result_dict['statusCode'] == '200':
+		id = result_dict.pop('id')
 		session.clear()
 		session['admin'] = (result_dict['message'] == 'admin')
-		session['user_name'] = user_name
+		session['user_id'] = id
 		#print(session)
 	#print(user_name, password, result_dict)
 	return json.dumps(result_dict)
@@ -69,43 +70,48 @@ def bk_user_delete():
 
 def check_camera_name_exists(camera_name, camera_id=None):
 	if camera_id is None:
-		sql_command = 'select `id` from `cameras` where `name` = %s'
+		sql_command = 'select `id` from `cameras` where `camera_name` = %s'
 		params = camera_name
 	else:
-		sql_command = 'select `id` from `cameras` where `name` = %s and not `id` = %s'
+		sql_command = 'select `id` from `cameras` where `camera_name` = %s and not `id` = %s'
 		params = (camera_name, camera_id)
 	num, _ = get_one_record(sql_command, params)
 	return num > 0
 
 def check_camera_url_exists(camera_url, camera_id=None):
 	if camera_id is None:
-		sql_command = 'select `id` from `cameras` where `url` = %s'
+		sql_command = 'select `id` from `cameras` where `camera_url` = %s'
 		params = camera_url
 	else:
-		sql_command = 'select `id` from `cameras` where `url` = %s and not `id` = %s'
+		sql_command = 'select `id` from `cameras` where `camera_url` = %s and not `id` = %s'
 		params = (camera_url, camera_id)
 	num, _ = get_one_record(sql_command, params)
 	return num > 0
 
+#sql_command = 'select `id`, `camera_name`, `camera_url`, `server_url`, `state`, `location` from `cameras` where `user_id` = %s' % session['user_id']
 @app.route('/bk/Camera', methods=['POST'])
 def bk_camera_add():
-	camera_name = request.form.get('name')
-	camera_url = request.form.get('url')
+	camera_name = request.form.get('camera_name')
+	camera_url = request.form.get('camera_url')
+	state = request.form.get('state')
+	location = request.form.get('location')
 	if check_camera_name_exists(camera_name): return json.dumps(error_400_message('camera_name'))
 	if check_camera_url_exists(camera_url): return json.dumps(error_400_message('camera_url'))
-	sql_command = 'insert into `cameras` (`name`, `url`) values (%s, %s)'
-	update_record(sql_command, (camera_name, camera_url))
+	sql_command = 'insert into `cameras` (`camera_name`, `camera_url`, `state`, `location`, `user_id`) values (%s, %s, %s, %s, %s)'
+	update_record(sql_command, (camera_name, camera_url, state, location, session['user_id']))
 	return json.dumps(success_200_message('ok'))
 
 @app.route('/bk/Camera', methods=['PUT'])
 def bk_camera_edit():
-	camera_name = request.form.get('name')
-	camera_url = request.form.get('url')
+	camera_name = request.form.get('camera_name')
+	camera_url = request.form.get('camera_url')
 	camera_id = request.form.get('id')
+	state = request.form.get('state')
+	location = request.form.get('location')
 	if check_camera_name_exists(camera_name, camera_id): return json.dumps(error_400_message('camera_name'))
 	if check_camera_url_exists(camera_url, camera_id): return json.dumps(error_400_message('camera_url'))
-	sql_command = 'update `cameras` set `name` = %s, `url` = %s WHERE `id` = %s'
-	update_record(sql_command, (camera_name, camera_url, camera_id))
+	sql_command = 'update `cameras` set `camera_name` = %s, `camera_url` = %s, `state` = %s, `location` = %s WHERE `id` = %s'
+	update_record(sql_command, (camera_name, camera_url, state, location, camera_id))
 	return json.dumps(success_200_message('ok'))
 
 @app.route('/bk/Camera', methods=['DELETE'])
@@ -117,8 +123,8 @@ def bk_camera_delete():
 
 
 ############################   menu   ############################
-usual_menu_items = ['Camera', 'Camera_View', 'Video']
-usual_menu_texts = ['Camera', 'Camera_View', 'Video']
+usual_menu_items = ['Camera', 'Camera_View', 'Video', 'Log_out']
+usual_menu_texts = ['Camera', 'Camera_View', 'Video', 'Log out']
 admin_menu_items = ['User']
 admin_menu_texts = ['User']
 @app.route('/bk/Menu', methods=['GET'])
@@ -148,7 +154,7 @@ def bk_User():
 
 @app.route('/bk/Camera', methods=['GET'])
 def bk_Camera():
-	sql_command = 'select `id`, `name`, `url` from `cameras`'
+	sql_command = 'select `id`, `camera_name`, `camera_url`, `server_url`, `state`, `location` from `cameras` where `user_id` = %s' % session['user_id']
 	return json.dumps(get_full_data(sql_command))
 
 
@@ -169,6 +175,11 @@ def fr_User():
 @app.route('/Camera')
 def fr_Camera():
 	return load_page('Camera')
+
+@app.route('/Log_out')
+def Log_out():
+	session.clear()
+	return render_template('index.html')
 
 
 ############################   Camera checking   ############################
