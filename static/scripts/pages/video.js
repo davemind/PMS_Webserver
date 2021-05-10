@@ -152,7 +152,7 @@ IVMS.Videos = function () {
 		video_data=null,
 		popupOptions = {
             width: 600,
-            height: 480,
+            height: 580,
             contentTemplate: function() {
                 return $("<div/>").append(
 					$("<p>" + video_data.video_filename + "</p>"),
@@ -163,7 +163,10 @@ IVMS.Videos = function () {
             title: "Saved Video",
             visible: false,
             dragEnabled: false,
-            closeOnOutsideClick: true
+            closeOnOutsideClick: true,
+			onHidden: function (e) {
+				$("#video_img").attr("src", "");
+			},
 		};
 
     self.init = function () {
