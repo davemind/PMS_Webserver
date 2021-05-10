@@ -14,10 +14,16 @@ SaleViewer.Customers = function () {
         gridOptions = {
 			keyExpr: "id",
 			editing: {
-				mode: "row",
+				mode: "popup",
 				allowAdding: true,
 				allowUpdating: true,
 				allowDeleting: true,
+				popup: {
+					title: "User Info",
+					showTitle: true,
+					width: 670,
+					height: 355,
+				},
 				useIcons: true
 			},
             dataSource: {
@@ -71,6 +77,14 @@ SaleViewer.Customers = function () {
                 {
                     dataField: "email",
                     alignment: "left",
+                },
+                {
+                    dataField: "password",
+                    alignment: "left",
+					editorOptions: {
+						mode: "password"
+					},
+					visible: false
                 },
                 {
                     dataField: "register_date",
