@@ -18,7 +18,7 @@ SaleViewer.Customers = function () {
 					title: "User Info",
 					showTitle: true,
 					width: 670,
-					height: 255,
+					height: 305,
 				},
 				useIcons: true
 			},
@@ -40,8 +40,7 @@ SaleViewer.Customers = function () {
 			export: {
 				enabled: true
 			},
-			onExporting: function(e) { 
-
+			onExporting: function(e) {
 				var workbook = new ExcelJS.Workbook(); 
 				var worksheet = workbook.addWorksheet('Main sheet'); 
 				DevExpress.excelExporter.exportDataGrid({ 
@@ -62,7 +61,7 @@ SaleViewer.Customers = function () {
 			},
 			summary: {
 				totalItems: [{
-					column: "name",
+					column: "camera_name",
 					summaryType: "count",
 				}]
 			},
@@ -106,6 +105,21 @@ SaleViewer.Customers = function () {
 						message: "location is required"
 					}],
 					width: "10%"
+                },
+                {
+                    dataField: "user_id",
+					caption: "User",
+					alignment: "left",
+					validationRules: [{
+						type: "required",
+						message: "state is required"
+					}],
+					lookup: {
+						dataSource: [],
+						displayExpr: "name",
+						valueExpr: "id"
+					},
+					width: "10%",
                 },
  			],
 			showBorders: false,
@@ -197,8 +211,9 @@ SaleViewer.Customers = function () {
 				alert("There is a Problem, Try Again!");			
 			},
 			success: function (result) {
-				var res = JSON.parse(result);
-				grid.option("dataSource", { store: res});
+				result = JSON.parse(result)
+				grid.option("columns[4].lookup.dataSource", result['users']);
+				grid.option("dataSource", { store: result['cameras']});
 				grid.endCustomLoading();
 			}
 		});	

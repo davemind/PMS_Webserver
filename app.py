@@ -95,10 +95,12 @@ def bk_camera_add():
 	camera_url = request.form.get('camera_url')
 	state = request.form.get('state')
 	location = request.form.get('location')
+	user_id = request.form.get('user_id')
+	if user_id is None: user_id = session['user_id']
 	if check_camera_name_exists(camera_name): return json.dumps(error_400_message('camera_name'))
-	if check_camera_url_exists(camera_url): return json.dumps(error_400_message('camera_url'))
+	#if check_camera_url_exists(camera_url): return json.dumps(error_400_message('camera_url'))
 	sql_command = 'insert into `cameras` (`camera_name`, `camera_url`, `state`, `location`, `user_id`) values (%s, %s, %s, %s, %s)'
-	update_record(sql_command, (camera_name, camera_url, state, location, session['user_id']))
+	update_record(sql_command, (camera_name, camera_url, state, location, user_id))
 	return json.dumps(success_200_message('ok'))
 
 @app.route('/bk/Camera', methods=['PUT'])
@@ -108,10 +110,12 @@ def bk_camera_edit():
 	camera_id = request.form.get('id')
 	state = request.form.get('state')
 	location = request.form.get('location')
+	user_id = request.form.get('user_id')
+	if user_id is None: user_id = session['user_id']
 	if check_camera_name_exists(camera_name, camera_id): return json.dumps(error_400_message('camera_name'))
-	if check_camera_url_exists(camera_url, camera_id): return json.dumps(error_400_message('camera_url'))
-	sql_command = 'update `cameras` set `camera_name` = %s, `camera_url` = %s, `state` = %s, `location` = %s WHERE `id` = %s'
-	update_record(sql_command, (camera_name, camera_url, state, location, camera_id))
+	#if check_camera_url_exists(camera_url, camera_id): return json.dumps(error_400_message('camera_url'))
+	sql_command = 'update `cameras` set `camera_name` = %s, `camera_url` = %s, `state` = %s, `location` = %s, `user_id` = %s WHERE `id` = %s'
+	update_record(sql_command, (camera_name, camera_url, state, location, user_id, camera_id))
 	return json.dumps(success_200_message('ok'))
 
 @app.route('/bk/Camera', methods=['DELETE'])
@@ -160,8 +164,14 @@ def bk_User():
 
 @app.route('/bk/Camera', methods=['GET'])
 def bk_Camera():
-	sql_command = 'select `id`, `camera_name`, `camera_url`, `server_url`, `state`, `location` from `cameras` where `user_id` = %s' % session['user_id']
-	return json.dumps(get_full_data(sql_command))
+	if session.get('admin') is False:
+		sql_command = 'select `id`, `camera_name`, `camera_url`, `server_url`, `state`, `location` from `cameras` where `user_id` = %s' % session['user_id']
+		return json.dumps(get_full_data(sql_command))
+	sql_command = 'select `id`, `camera_name`, `camera_url`, `server_url`, `state`, `location`,`user_id` from `cameras`'
+	cameras = get_full_data(sql_command)
+	sql_command = 'select `id`, `name` from `tbl_admin` where `role_id` != 1'
+	users = get_full_data(sql_command)
+	return json.dumps({'cameras': cameras, 'admin': True, 'users': users})
 
 @app.route('/bk/Camera_View', methods=['GET'])
 def bk_Camera_View():
@@ -190,7 +200,9 @@ def fr_User():
 
 @app.route('/Camera')
 def fr_Camera():
-	return load_page('Camera')
+	if session.get('admin') is False:
+		return load_page('Camera')
+	return render_template('Camera_admin.html')
 
 @app.route('/Camera_View')
 def fr_Camera_View():
