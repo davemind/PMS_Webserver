@@ -135,14 +135,14 @@ def bk_Video_delete():
 ############################   menu   ############################
 usual_menu_items = ['Camera', 'Camera_View', 'Video', 'Log_out']
 usual_menu_texts = ['Camera', 'Camera_View', 'Video', 'Log out']
-admin_menu_items = ['User']
-admin_menu_texts = ['User']
+admin_menu_items = ['User', 'Camera', 'Video', 'Log_out']
+admin_menu_texts = ['User', 'Camera', 'Video', 'Log out']
 @app.route('/bk/Menu', methods=['GET'])
 def get_menu_item():
 	if session.get('admin') is None:
 		return json.dumps(error_403_message('not login'))
-	menu_items = (admin_menu_items if session['admin'] else []) + usual_menu_items
-	menu_texts = (admin_menu_texts if session['admin'] else []) + usual_menu_texts
+	menu_items = admin_menu_items if session['admin'] else usual_menu_items
+	menu_texts = admin_menu_texts if session['admin'] else usual_menu_texts
 	menu_dict = []
 	for menu_item, menu_text in zip(menu_items, menu_texts):
 		menu_dict.append({
@@ -190,19 +190,23 @@ def main_register():
 	return render_template('index.html')
 
 def load_page(param):
-	if param in usual_menu_items: return render_template('{}.html'.format(param))
-	if session.get('admin') is False: return render_template('empty.html')
-	return render_template('{}.html'.format(param))
+	if session.get('admin') is None:
+		return render_template('index.html')
+	if session['admin']:
+		if param in admin_menu_items:
+			if param == 'Camera': return render_template('Camera_admin.html')
+			return render_template('{}.html'.format(param))
+	else:
+		if param in usual_menu_items: return render_template('{}.html'.format(param))
+	return render_template('empty.html')
 
 @app.route('/User')
 def fr_User():
-	return load_page('Agent')
+	return load_page('User')
 
 @app.route('/Camera')
 def fr_Camera():
-	if session.get('admin') is False:
-		return load_page('Camera')
-	return render_template('Camera_admin.html')
+	return load_page('Camera')
 
 @app.route('/Camera_View')
 def fr_Camera_View():
