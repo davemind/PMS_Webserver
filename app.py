@@ -28,21 +28,24 @@ from sql import get_one_record
 from sql import update_record
 def check_user_name_exists(user_name, user_id=None):
 	if user_id is None:
-		sql_command = 'select `id` from `agent` where `name` = %s'
+		sql_command = 'select `id` from `tbl_admin` where `name` = %s'
 		params = user_name
 	else:
-		sql_command = 'select `id` from `agent` where `name` = %s and not `id` = %s'
+		sql_command = 'select `id` from `tbl_admin` where `name` = %s and not `id` = %s'
 		params = (user_name, user_id)
 	num, _ = get_one_record(sql_command, params)
 	return num > 0
 
+#sql_command = 'select `id`, `password`, `name`, `email`, `register_date`, `role_id` from `tbl_admin` where `role_id` != 1'
 @app.route('/bk/User', methods=['POST'])
 def bk_user_add():
 	user_name = request.form.get('name')
 	email = request.form.get('email')
+	password = request.form.get('password')
+	role_id = request.form.get('role_id')
 	if check_user_name_exists(user_name): return json.dumps(error_400_message('user_name'))
-	sql_command = 'insert into `agent` (`name`, `email`, `register_date`) values (%s, %s, %s)'
-	update_record(sql_command, (user_name, email, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")))
+	sql_command = 'insert into `tbl_admin` (`name`, `email`, `register_date`, `password`, `role_id`) values (%s, %s, %s, %s, %s)'
+	update_record(sql_command, (user_name, email, datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), password, role_id))
 	return json.dumps(success_200_message('ok'))
 
 @app.route('/bk/User', methods=['PUT'])
@@ -50,17 +53,17 @@ def bk_user_edit():
 	user_name = request.form.get('name')
 	email = request.form.get('email')
 	user_id = request.form.get('id')
+	password = request.form.get('password')
+	role_id = request.form.get('role_id')
 	if check_user_name_exists(user_name, user_id): return json.dumps(error_400_message('user_name'))
-	sql_command = 'update `agent` set `name` = %s, `email` = %s WHERE `id` = %s'
-	update_record(sql_command, (user_name, email, user_id))
+	sql_command = 'update `tbl_admin` set `name` = %s, `email` = %s, `password` = %s, `role_id` = %s WHERE `id` = %s'
+	update_record(sql_command, (user_name, email, password, role_id, user_id))
 	return json.dumps(success_200_message('ok'))
 
 @app.route('/bk/User', methods=['DELETE'])
 def bk_user_delete():
 	user_id = request.form.get('id')
-	sql_command = 'delete from `agent` WHERE `id` = %s'
-	update_record(sql_command, user_id)
-	sql_command = 'delete from `agent_permissions` WHERE `agent_id` = %s'
+	sql_command = 'delete from `tbl_admin` WHERE `id` = %s'
 	update_record(sql_command, user_id)
 	return json.dumps(success_200_message('ok'))
 
@@ -137,8 +140,11 @@ from sql import get_full_data
 from sql import get_one_data
 @app.route('/bk/User', methods=['GET'])
 def bk_User():
-	sql_command = 'select `id`, `password`, `name`, `email`, `register_date` from `tbl_admin` where `role_id` != 1'
-	return json.dumps(get_full_data(sql_command))
+	sql_command = 'select `id`, `password`, `name`, `email`, `register_date`, `role_id` from `tbl_admin` where `role_id` != 1'
+	users = get_full_data(sql_command)
+	sql_command = 'select `id`, `title` from `roles` where `id` != 1'
+	roles = get_full_data(sql_command)
+	return json.dumps({'users': users, 'roles': roles})
 
 @app.route('/bk/Camera', methods=['GET'])
 def bk_Camera():

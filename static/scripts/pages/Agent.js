@@ -73,10 +73,18 @@ SaleViewer.Customers = function () {
             columns: [
                 {
                     dataField: "name",
+					validationRules: [{
+						type: "required",
+						message: "name is required"
+					}]
                 },
                 {
                     dataField: "email",
                     alignment: "left",
+					validationRules: [{
+						type: "required",
+						message: "email is required"
+					}]
                 },
                 {
                     dataField: "password",
@@ -84,7 +92,11 @@ SaleViewer.Customers = function () {
 					editorOptions: {
 						mode: "password"
 					},
-					visible: false
+					visible: false,
+					validationRules: [{
+						type: "required",
+						message: "password is required"
+					}]
                 },
                 {
                     dataField: "register_date",
@@ -92,6 +104,19 @@ SaleViewer.Customers = function () {
 					format: "dd/MM/yyyy",
                     alignment: "left",
 					allowEditing: false
+                },
+                {
+                    dataField: "role_id",
+                    caption: "Role",
+					lookup: {
+						dataSource: [],
+						displayExpr: "title",
+						valueExpr: "id"
+					},
+					validationRules: [{
+						type: "required",
+						message: "Role is required"
+					}]
                 },
 			],
             showColumnLines: false,
@@ -101,47 +126,26 @@ SaleViewer.Customers = function () {
 			repaintChangesOnly: true,
 			onRowInserting: function(e) {
 				var newData = e.data;
-				var empty = false;
-				if (Object.keys(e.data).length == 3){
-					for (var key in newData){
-						if (newData[key].trim() == ''){
-							empty = true;
-							break;
-						}
-					}
-				}
-				else{
-					empty = true;
-				}
-				if (!empty){
-					$.ajax({
-						url: "/bk/User",
-						type: "POST",
-						data: newData,
-						error: function (result) {
-							alert("There is a Problem, Try Again!");
-						},
-						success: function (result) {
-							var data = JSON.parse(result);
-							if(data['statusCode'] == '400'){
-								if(data['message'] == 'user_name'){
-									alert("The name is duplicated with other, Try Again!");
-								}
-								else{
-									alert("The email is duplicated with other, Try Again!");
-								}
+				$.ajax({
+					url: "/bk/User",
+					type: "POST",
+					data: newData,
+					error: function (result) {
+						alert("There is a Problem, Try Again!");
+					},
+					success: function (result) {
+						var data = JSON.parse(result);
+						if(data['statusCode'] == '400'){
+							if(data['message'] == 'user_name'){
+								alert("The name is duplicated with other, Try Again!");
 							}
-							location.reload();
+							else{
+								alert("The email is duplicated with other, Try Again!");
+							}
 						}
-					});
-				}
-				else{
-					alert('Some item is empty!');
-				}
-				e.cancel = empty;
-			},
-			onRowInserted: function(e) {
-				//console.log("RowInserted");
+						location.reload();
+					}
+				});
 			},
 			onRowUpdating: function(e) {
 				var newData = e.newData;
@@ -178,9 +182,6 @@ SaleViewer.Customers = function () {
 					});
 				}
 				e.cancel = empty;
-			},
-			onRowUpdated: function(e) {
-				//console.log("RowUpdated");
 			},
 			onRowRemoving: function(e) {
 				$.ajax({
@@ -222,7 +223,9 @@ SaleViewer.Customers = function () {
 				alert("There is a Problem, Try Again!");			
 			},
 			success: function (result) {
-				grid.option("dataSource", { store: JSON.parse(result)});
+				result = JSON.parse(result)
+				grid.option("columns[4].lookup.dataSource", result['roles']);
+				grid.option("dataSource", { store: result['users']});
 				grid.endCustomLoading();
 				if (selectFirst === undefined || selectFirst) grid.selectRows(dataSource.store[0]);	
 			}
