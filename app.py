@@ -221,6 +221,19 @@ def Log_out():
 	session.clear()
 	return render_template('index.html')
 
-
+############################   Rest API   ############################
+@app.route('/api/CameraDisconnect', methods=['POST'])
+def api_cameraDisconnect():
+	camera_id = request.form.get('camera_id')
+	type = 'camera disconnect'
+	content = 'disconnected, please check it'
+	sql_command = 'SELECT aa.*, tbl_admin.`email` FROM (SELECT * FROM cameras WHERE `id`=%s) aa LEFT JOIN tbl_admin ON aa.`user_id` = tbl_admin.`id`'
+	params = (camera_id)
+	num, record = get_one_record(sql_command, params)
+	user_email = ''
+	sql_command = 'insert into `notifications` (`type`, `content`, `user_email`) values (%s, %s)'
+	update_record(sql_command, (type, content, user_email))
+	return json.dumps({'statusCode': 200})
+	
 if __name__ == "__main__":
 	app.run(debug=True, host='0.0.0.0', port=5000, threaded=True)
