@@ -230,7 +230,7 @@ def api_cameraDisconnect():
 	sql_command = 'SELECT aa.*, tbl_admin.`email` FROM (SELECT * FROM cameras WHERE `id`=%s) aa LEFT JOIN tbl_admin ON aa.`user_id` = tbl_admin.`id`'
 	params = (camera_id)
 	num, record = get_one_record(sql_command, params)
-	user_email = ''
+	user_email = record[-1]
 	sql_command = 'insert into `notifications` (`type`, `content`, `user_email`) values (%s, %s)'
 	update_record(sql_command, (type, content, user_email))
 	return json.dumps({'statusCode': 200})

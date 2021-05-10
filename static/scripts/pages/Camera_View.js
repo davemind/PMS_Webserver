@@ -22,12 +22,6 @@ function myFunction() {
 	});	
 };
 
-function stop() {
-	$("#camera_url1").attr("src", "");
-	$("#camera_url2").attr("src", "");
-	$("#camera_url3").attr("src", "");
-	$("#camera_url4").attr("src", "");
-	$("#camera_url5").attr("src", "");
-	$("#camera_url6").attr("src", "");
-	top.location="/Camera"
+function single_camera(src_url) {
+	$("#camera_url").attr("src", src_url);
 };
