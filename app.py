@@ -180,8 +180,11 @@ def bk_Camera_View():
 
 @app.route('/bk/Video/GetAllVideos', methods=['GET'])
 def bk_Video_GetAllVideos():
-	sql_command = 'select * from `videos`'# where `user_id` = %s' % session['user_id']
-	return json.dumps(get_full_data(sql_command))
+	sql_command = 'select `id`, `camera_name` from `cameras`'
+	cameras = get_full_data(sql_command)
+	sql_command = 'select * from `videos`'
+	videos = get_full_data(sql_command)
+	return json.dumps({'cameras': cameras, 'videos': videos})
 
 
 ############################   web pages   ############################

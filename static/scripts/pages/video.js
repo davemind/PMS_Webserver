@@ -93,7 +93,12 @@ IVMS.Videos = function () {
 				{
 					dataField: "camera_id",
 					caption: "Camera",
-					groupIndex: 0
+					groupIndex: 0,
+					lookup: {
+						dataSource: [],
+						displayExpr: "camera_name",
+						valueExpr: "id"
+					},
 				},
                 {
 					type: "buttons",
@@ -222,7 +227,8 @@ IVMS.Videos = function () {
 			},
 			success: function (result) {
 				var res = JSON.parse(result);
-				grid.option("dataSource", { store: res});
+				grid.option("columns[4].lookup.dataSource", res['cameras']);
+				grid.option("dataSource", { store: res['videos']});
 				grid.endCustomLoading();
 				$(window).resize(function () {
 					$t_fixed.width($('#grid').width());
