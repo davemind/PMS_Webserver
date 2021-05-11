@@ -66,11 +66,11 @@
 }
 
 .noti_show.num {
-	position: absolute;
+	position: relative;
 	font-size: 0.8em;
-	top: 6px;
+	top: -9px;
 	color: #ffffff;
-	right: 29px
+	left: -24px
 }
 
 .noti_none.fa-circle {
