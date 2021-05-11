@@ -1,4 +1,5 @@
 import pymysql
+from datetime import timezone, datetime
 
 def get_db_cursor():
 	db = pymysql.connect(host='192.168.1.131', user='root', db='vms')
@@ -37,7 +38,11 @@ def get_full_data(sql_command, row_headers=None):
 	if row_headers is None: row_headers = [x[0] for x in cur.description]  # this will extract row headers
 	rv = cur.fetchall()
 	json_data = []
-	for result in rv:
+	for row in rv:
+		result = []
+		for item in row:
+			if type(item) is datetime: item = item.astimezone(timezone.utc)
+			result.append(item)
 		json_data.append(dict(zip(row_headers, result)))
 	cur.close()
 	db.close()
