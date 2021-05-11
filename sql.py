@@ -14,6 +14,12 @@ def get_one_record(sql_command, params):
 	db.close()
 	return num, record
 
+def get_records(sql_command, params):
+	db, cur = get_db_cursor()
+	num = cur.execute(sql_command, params)
+	rv = cur.fetchall()
+	return rv
+
 def get_one_data(sql_command, id):
 	db, cur = get_db_cursor()
 	num = cur.execute(sql_command, id)

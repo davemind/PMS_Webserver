@@ -18,9 +18,11 @@ def bk_user_login():
 	result_dict = log_in(user_name, password)
 	if result_dict['statusCode'] == '200':
 		id = result_dict.pop('id')
+		email = result_dict.pop('email')
 		session.clear()
 		session['admin'] = (result_dict['message'] == 'admin')
 		session['user_id'] = id
+		session['user_email'] = email
 		#print(session)
 	#print(user_name, password, result_dict)
 	return json.dumps(result_dict)
@@ -224,19 +226,45 @@ def Log_out():
 	session.clear()
 	return render_template('index.html')
 
-############################   Rest API   ############################
+############################   Alarm   ############################
 @app.route('/api/CameraDisconnect', methods=['POST'])
 def api_cameraDisconnect():
 	camera_id = request.form.get('camera_id')
 	type = 'camera disconnect'
-	content = 'disconnected, please check it'
 	sql_command = 'SELECT aa.*, tbl_admin.`email` FROM (SELECT * FROM cameras WHERE `id`=%s) aa LEFT JOIN tbl_admin ON aa.`user_id` = tbl_admin.`id`'
 	params = (camera_id)
 	num, record = get_one_record(sql_command, params)
+	content = 'Camera "{}" with url of "{}" disconnected'.format(record[1], record[2])
 	user_email = record[-1]
-	sql_command = 'insert into `notifications` (`type`, `content`, `user_email`) values (%s, %s)'
+	sql_command = 'insert into `notifications` (`type`, `content`, `user_email`) values (%s, %s, %s)'
 	update_record(sql_command, (type, content, user_email))
 	return json.dumps({'statusCode': 200})
-	
+
+from sql import get_records
+from engine import mail_send
+@app.route('/bk/GetNewAlarmNumber', methods=['GET'])
+def api_GetNewAlarmNumber():
+	if session.get('user_email') is None: return "0"
+	sql_command = 'select * from `notifications` where user_email = %s and checked = %s'
+	params = (session['user_email'], 0)
+	records = get_records(sql_command, params)
+	updated_sql_command = 'update `notifications` set `mail_sent` = %s where `id` = %s'
+	body = ''
+	for record in records:
+		if (datetime.datetime.now() - record[3]).seconds / 3600 > 8 and record[-1] == 0:
+			body += '{} at {} {}.'.format(record[2], record[3].strftime('%I:%M:%S %p'), record[3].strftime("%B %d, %Y"))
+			update_record(updated_sql_command, (1, record[0]))
+	# send mail
+	if len(body) > 0: mail_send(session['user_email'], record[1], body)
+	return str(len(records))
+
+@app.route('/Alarm/GetAllAlarmCategory', methods=['GET'])
+def bk_GetAllAlarmCategory():
+	sql_command = 'select * from `notifications` where `user_email` = "%s" and `checked` = %s' % (session['user_email'], 0)
+	updated_sql_command = 'update `notifications` set `checked` = %s where `user_email` = %s and `checked` = %s'
+	result = get_full_data(sql_command)
+	update_record(updated_sql_command, (1, session['user_email'], 0))
+	return json.dumps(result)
+
 if __name__ == "__main__":
 	app.run(debug=True, host='0.0.0.0', port=5000, threaded=True)

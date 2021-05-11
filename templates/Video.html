@@ -14,6 +14,9 @@
 	<!--<link href="/static/css/site.css" rel="stylesheet"> -->
 	<link rel="stylesheet/less" type="text/css" href="/static/css/site.less" />
 	<script src="static/js/less.js" ></script>
+	<!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/Login_v12/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/static/css/head.css" />
 	
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/20.2.5/css/dx.common.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/20.2.5/css/dx.light.css" />
@@ -43,7 +46,14 @@
                 
                 <div class="menu">
                     <div id="menu"></div>
-                    
+                    <div style="float:left;">
+                        <a class="btn" onclick="alarm_list()">
+                            <i class="fa fa-bell noti_show" style="font-size:1.2em;"></i>
+                            <span id="alarm_circle" class="fa fa-circle noti_none"></span>
+                            <span class="num noti_show"></span>
+                        </a>
+                    </div>
+
                     <div id="openPopupButton">
                         <a><span class="info-link">?</span></a>
                     </div>
@@ -87,6 +97,6 @@
 		</div>
     </div>
 	<div id="video_popup"> </div>
-
+	<div id="noti_popup"></div>
 </body>
 </html>

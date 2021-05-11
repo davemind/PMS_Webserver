@@ -43,3 +43,79 @@ function myTimer() {
 }
 
 var myVar = setInterval(function () { myTimer() }, 5000);
+
+var popup = null;
+function alarm_list() {
+	if ($(".num").text() == "") {
+		return;
+	}
+	$.ajax({
+		url: '/Alarm/GetAllAlarmCategory',
+		error: function (result) {
+			alert("There is a Problem, Try Again!");
+		},
+		success: function (result) {
+			var alarm_circle = document.getElementById("alarm_circle");
+			alarm_circle.setAttribute("class", "fa fa-circle noti_none");
+			$(".num").text("");
+			var gridOptions = {
+				dataSource: {
+					store: JSON.parse(result)
+				},
+				paging: {
+					pageSize: 8
+				},
+				pager: {
+					showInfo: true
+				},
+				filterRow: {
+					visible: true
+				},
+				headerFilter: {
+					visible: true
+				},
+				columns: [
+					{
+						dataField: "type",
+						caption: "Alarm Type",
+					},
+					{
+						dataField: "content",
+						caption: "Alarm Content",
+						width: "60%"
+					},
+					{
+						dataField: "created_time",
+						caption: "Alarm Time",
+						dataType: "datetime",
+						alignment: "right",
+						format: "dd/MM/yy HH:mm",
+					},
+				],
+				showBorders: false,
+				columnAutoWidth: false,
+				showColumnLines: false,
+				showRowLines: false,
+				hoverStateEnabled: true,
+			},
+			popupOptions = {
+				width: 600,
+				height: 480,
+				contentTemplate: function () {
+					return $('<div id="grid" class="products"></div>').dxDataGrid(gridOptions);
+				},
+				showTitle: true,
+				title: "New Alarms",
+				visible: false,
+				dragEnabled: false,
+				closeOnOutsideClick: true
+			};
+			if (popup) {
+				popup.option("contentTemplate", popupOptions.contentTemplate.bind(this));
+			} else {
+				popup = $("#noti_popup").dxPopup(popupOptions).dxPopup("instance");
+			}
+			popup.show();
+		}
+	});
+}
