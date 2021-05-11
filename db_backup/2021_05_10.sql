@@ -80,6 +80,7 @@ CREATE TABLE `notifications` (
   `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `checked` int(1) DEFAULT '0',
   `user_email` varchar(50) DEFAULT NULL,
+  `mail_sent` int(1) DEFAULT '0' COMMENT 'checking if mail is sent for not',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
