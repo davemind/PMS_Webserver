@@ -230,22 +230,6 @@ IVMS.Videos = function () {
 				grid.option("columns[4].lookup.dataSource", res['cameras']);
 				grid.option("dataSource", { store: res['videos']});
 				grid.endCustomLoading();
-				$(window).resize(function () {
-					$t_fixed.width($('#grid').width());
-				});
-				$(document).scroll(function () {
-					var grid = $('#grid');
-					if (!$t_fixed)
-						return;
-					if ($(this).scrollTop() >= grid.position().top && $(this).scrollTop() <= (grid.position().top + grid.height() - grid.find(".dx-datagrid-headers").height())) {
-						positionFlag = true;
-						$t_fixed.css("position", "fixed");
-					}
-					else {
-						$t_fixed.css("position", "static");
-						positionFlag = false
-					}
-				});
 			}
 		});	
     };
