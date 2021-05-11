@@ -22,3 +22,24 @@ $(function () {
 
 });
 
+function myTimer() {
+	$.ajax({
+		url: '/bk/GetNewAlarmNumber',
+		error: function (result) {
+		},
+		success: function (result) {
+			if (result == "0") {
+				var alarm_circle = document.getElementById("alarm_circle");
+				alarm_circle.setAttribute("class", "fa fa-circle noti_none");
+				$(".num").text("");
+			}
+			else {
+				var alarm_circle = document.getElementById("alarm_circle");
+				alarm_circle.setAttribute("class", "fa fa-circle noti_show");
+				$(".num").text(result);
+			}
+		}
+	});
+}
+
+var myVar = setInterval(function () { myTimer() }, 5000);

@@ -7,6 +7,9 @@
 	<title>Camera View</title>
 	
 	<link rel="stylesheet/less" type="text/css" href="/static/css/site.less" />
+	<!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/Login_v12/css/font-awesome.min.css">
+	
 	<script src="static/js/less.js" ></script>
 	
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/20.2.4/css/dx.common.css" />
@@ -16,6 +19,8 @@
 	<script src="static/js/dx.all.js"></script>
 	<script src="static/scripts/index.js"></script>
 	<script src="static/scripts/pages/topmenu.js"></script>
+	<link rel="stylesheet" href="/static/css/head.css" />
+	
 	<script>
 		$(function () {
 			SaleViewer.criteria = "";
@@ -55,7 +60,13 @@
                 
                 <div class="menu">
                     <div id="menu"></div>
-                    
+                    <div style="float:left;">
+                        <a class="btn" onclick="alarm_list()">
+                            <i class="fa fa-bell noti_show" style="font-size:1.2em;"></i>
+                            <span id="alarm_circle" class="fa fa-circle noti_none"></span>
+                            <span class="num noti_show"></span>
+                        </a>
+                    </div>
                     <div id="openPopupButton">
                         <a><span class="info-link">?</span></a>
                     </div>
