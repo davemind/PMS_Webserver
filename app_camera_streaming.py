@@ -9,10 +9,17 @@ app = Flask(__name__)
 class VideoCamera():
 	def __init__(self, url):
 		self.video = cv2.VideoCapture(url)
-
+		self.url = url
+		self.error_count = 0
+		
 	def __del__(self):
 		self.video.release()
 
+	def reset(self):
+		self.video.release()
+		self.video = cv2.VideoCapture(self.url)
+		self.error_count = 0
+		
 	def get_frame(self):
 		success, image = self.video.read()
 		#ret, jpeg = cv2.imencode('.jpg', cv2.resize(image, (160, 90)))
@@ -23,9 +30,14 @@ def gen(camera):
 	while True:
 		try:
 			frame = camera.get_frame()
+			camera.error_count=0
 		except:
 			ret, jpeg = cv2.imencode('.jpg', cv2.imread('static/images/no connected.jpg'))
 			frame = jpeg.tobytes()
+			camera.error_count+=1
+			if camera.error_count>10:
+				camera.reset()
+				
 		yield (b'--frame\r\n'
 			   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
