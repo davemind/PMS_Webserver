@@ -182,11 +182,9 @@ def bk_Camera_View():
 
 @app.route('/bk/Video/GetAllVideos', methods=['GET'])
 def bk_Video_GetAllVideos():
-	sql_command = 'select `id`, `camera_name` from `cameras`'
+	sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` ORDER BY `start_time` DESC;'
 	cameras = get_full_data(sql_command)
-	sql_command = 'select * from `videos`'
-	videos = get_full_data(sql_command)
-	return json.dumps({'cameras': cameras, 'videos': videos})
+	return json.dumps(cameras)
 
 
 ############################   web pages   ############################

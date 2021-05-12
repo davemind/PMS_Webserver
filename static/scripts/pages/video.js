@@ -91,14 +91,12 @@ IVMS.Videos = function () {
 					format: "dd/MM/yy HH:mm",
                 },
 				{
-					dataField: "camera_id",
-					caption: "Camera",
-					groupIndex: 0,
-					lookup: {
-						dataSource: [],
-						displayExpr: "camera_name",
-						valueExpr: "id"
-					},
+					dataField: "camera_name",
+					caption: "Camera Name",
+				},
+				{
+					dataField: "location",
+					caption: "Camera Location",
 				},
                 {
 					type: "buttons",
@@ -227,8 +225,7 @@ IVMS.Videos = function () {
 			},
 			success: function (result) {
 				var res = JSON.parse(result);
-				grid.option("columns[4].lookup.dataSource", res['cameras']);
-				grid.option("dataSource", { store: res['videos']});
+				grid.option("dataSource", { store: res});
 				grid.endCustomLoading();
 			}
 		});	
