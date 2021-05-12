@@ -135,8 +135,8 @@ def bk_Video_delete():
 	return json.dumps(success_200_message('ok'))
 
 ############################   menu   ############################
-usual_menu_items = ['Camera', 'Camera_View', 'Video', 'Log_out']
-usual_menu_texts = ['Camera', 'Camera_View', 'Video', 'Log out']
+usual_menu_items = ['Camera_View', 'Video', 'Log_out']
+usual_menu_texts = ['Camera_View', 'Video', 'Log out']
 admin_menu_items = ['User', 'Camera', 'Video', 'Log_out']
 admin_menu_texts = ['User', 'Camera', 'Video', 'Log out']
 @app.route('/bk/Menu', methods=['GET'])
