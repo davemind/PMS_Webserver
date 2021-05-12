@@ -26,6 +26,7 @@ function myFunction() {
 
 function single_camera(id) {
 	var cam_url = $("#camera_url" + id.toString()).attr("src");
+	$("#camera_url").attr("src", "");
 	$("#camera_url").attr("src", cam_url);
 	var cam_name = document.getElementById("camera_name" + id.toString()).textContent;
 	document.getElementById("camera_name").textContent = cam_name;
