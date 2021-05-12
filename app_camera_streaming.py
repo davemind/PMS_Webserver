@@ -32,11 +32,15 @@ def gen(camera):
 			frame = camera.get_frame()
 			camera.error_count=0
 		except:
-			ret, jpeg = cv2.imencode('.jpg', cv2.imread('static/images/no connected.jpg'))
-			frame = jpeg.tobytes()
 			camera.error_count+=1
-			if camera.error_count>10:
+			if camera.error_count>5 :
 				camera.reset()
+				return
+			elif camera.error_count>50 :
+				ret, jpeg = cv2.imencode('.jpg', cv2.imread('static/images/no connected.jpg'))
+				frame = jpeg.tobytes()
+			else :
+				return
 				
 		yield (b'--frame\r\n'
 			   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
@@ -103,4 +107,4 @@ def fr_video_feed12():
 
 
 if __name__ == "__main__":
-	app.run(debug=True, host='0.0.0.0', port=5001, threaded=True)
+	app.run(debug=False, host='0.0.0.0', port=5001, threaded=True)
