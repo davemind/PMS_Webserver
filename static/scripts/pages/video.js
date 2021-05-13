@@ -209,6 +209,40 @@ IVMS.Videos = function () {
 			}
 		});
 		
+		var menuSettings = [
+			{ id: 1, name: "Today"},
+			{ id: 2, name: "This Week"},
+			{ id: 3, name: "This Month"},
+			{ id: 4, name: "This Year"},
+			{ id: 5, name: "All"},
+		];
+		$("#Timeline").dxDropDownButton({
+			items: menuSettings,
+			onItemClick: function(e) {
+				grid.option("dataSource", { store: []});
+				grid.beginCustomLoading();
+				$.ajax({
+					url: "/bk/Video",
+					data: {'timeline': e.itemData.name},
+					error: function (result) {
+						grid.endCustomLoading();
+						alert("There is a Problem, Try Again!");			
+					},
+					success: function (result) {
+						result = JSON.parse(result)
+						grid.option("dataSource", { store: result});
+						grid.endCustomLoading();
+						if (selectFirst === undefined || selectFirst) grid.selectRows(dataSource.store[0]);	
+					}
+				});	
+			},
+			displayExpr: "name",
+			keyExpr: "id",
+			useSelectMode: true,
+			selectedItemKey: 1,
+			width: 150,
+		});
+		
 		var gridContainer = $("#grid");
         gridContainer.dxDataGrid(gridOptions);
         var grid = gridContainer.data("dxDataGrid");
@@ -217,8 +251,8 @@ IVMS.Videos = function () {
 		grid.beginCustomLoading();
 		
 		$.ajax({
-            url: "/bk/Video/GetAllVideos",
-			data: loadOptions,
+            url: "/bk/Video",
+			data: {'timeline': "Today"},
 			error: function (result) {
 				grid.endCustomLoading();
 				alert("There is a Problem, Try Again!");			
