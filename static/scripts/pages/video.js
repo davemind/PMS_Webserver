@@ -170,7 +170,35 @@ IVMS.Videos = function () {
 			onHidden: function (e) {
 				$("#video_img").attr("src", "");
 			},
-		};
+			toolbarItems: [{
+				widget: "dxButton",
+				location: "after",
+				options: { 
+					icon: 'download',
+					onClick: function(e) { 
+						var filePath = $("#video_img").attr("src").substring(1);
+						$.ajax({
+							url: "/fileExists",
+							data: {'filepath': filePath},
+							type: "POST",
+							error: function (result) {
+								alert("There is a Problem, Try Again!");			
+							},
+							success: function (result) {
+								result = JSON.parse(result)
+								if (result['existing']){
+									top.location="/filedownload?filepath=" + filePath;
+								}
+								else {
+									alert('The source video does not exists!');
+								}
+							}
+						});	
+						
+					}
+				}
+			}]
+	};
 
     self.init = function () {
 		$('#exportPdfButton').dxButton({
