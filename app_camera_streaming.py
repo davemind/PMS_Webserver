@@ -22,15 +22,28 @@ class VideoCamera():
 		
 	def get_frame(self):
 		success, image = self.video.read()
-		#ret, jpeg = cv2.imencode('.jpg', cv2.resize(image, (160, 90)))
-		ret, jpeg = cv2.imencode('.jpg', image)
-		return jpeg.tobytes()
+		if success :
+			#ret, jpeg = cv2.imencode('.jpg', cv2.resize(image, (160, 90)))
+			ret, jpeg = cv2.imencode('.jpg', image)
+			return jpeg.tobytes(), True
+		else :
+			return None, False
+		
 
 def gen(camera):
 	while True:
 		try:
-			frame = camera.get_frame()
-			camera.error_count=0
+			frame, suc = camera.get_frame()
+			if suc:
+				camera.error_count=0
+			else:
+				camera.error_count+=1
+				if camera.error_count>5 :
+					camera.reset()
+					return
+				elif camera.error_count>50 :
+					ret, jpeg = cv2.imencode('.jpg', cv2.imread('static/images/no connected.jpg'))
+					frame = jpeg.tobytes()
 		except:
 			camera.error_count+=1
 			if camera.error_count>5 :
@@ -39,10 +52,8 @@ def gen(camera):
 			elif camera.error_count>50 :
 				ret, jpeg = cv2.imencode('.jpg', cv2.imread('static/images/no connected.jpg'))
 				frame = jpeg.tobytes()
-			else :
-				return
-				
-		yield (b'--frame\r\n'
+		if frame is not None:
+			yield (b'--frame\r\n'
 			   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 @app.route('/video_feed1')
