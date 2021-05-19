@@ -8,6 +8,8 @@ var treeViewCameras;
 var cameras_info;
 var streaming_address_pref = 'http://192.168.1.131:8080/'
 var player;
+var canvas = document.createElement('canvas');
+var context = canvas.getContext('2d');
 
 $(function(){
 	title_area_height = 0;//$('#title_area').height() + 15;
@@ -138,28 +140,31 @@ function grid_setting() {
 			vcell_str += "</video-js>"
 		}
 		else {
-			vcell_str = "<img class='camera_video' src='static/images/no connected.jpg'/>"
+			vcell_str = "<img class='camera_video_empty' src='static/images/no connected.jpg'/>"
 		}
 		var acell = $('<div/>');
 		var pcell = $("<p id='camera_name" + String(i) + "' class='camera_title'></p>");
 		var vcell = $(vcell_str);
 		acell.addClass('video-cell');
-		//acell.css('background-color', getRandomColor());
 		pcell.appendTo(acell);
 		vcell.appendTo(acell);
+		if (i < cameras_info.length){
+			var bcell = $('<button onclick="snapshot(' + "'" + video_id + "'" + ')">SnapShot</button>');
+			bcell.appendTo(acell);
+		}
 		acell.appendTo($('#camera_area'));
 		if (i < cameras_info.length){
+			document.getElementById("camera_name" + String(i)).textContent = cameras_info[i];
 			player.push(videojs(video_id));
 		}
-		/*<video-js id="video_id1" class="vjs-default-skin" controls preload="auto" width="640" height="360">
-		<source src="http://192.168.1.131:8080/stef.m3u8" type="application/x-mpegURL">
-		</video-js>*/
 	}
 	player.forEach(player_start);
 	$('.video-cell').width(cell_width);
 	$('.video-cell').height(cell_height);
 	$('.camera_video').width(cell_width * 0.99);
-	$('.camera_video').height(cell_height * 0.99);
+	$('.camera_video').height(cell_height * 0.9);
+	$('.camera_video_empty').width(cell_width * 0.99);
+	$('.camera_video_empty').height(cell_height * 0.99);
 }
 
 function player_start(single_player, index){
@@ -172,6 +177,20 @@ function player_start(single_player, index){
 
 function player_finish(single_player, index){
 	single_player.dispose();
+}
+
+function snapshot(id)
+{
+	var video = document.getElementById(id);
+	var w, h;
+	w = video.firstChild.videoWidth; h = video.firstChild.videoHeight;
+	canvas.width = w; canvas.height = h;
+	context.fillRect(0, 0, w, h);
+	context.drawImage(video.firstChild, 0, 0, w, h)
+	var dataURL = canvas.toDataURL();
+	$("#download").attr("href", dataURL)
+	$("#download").attr("download", "snapshot.jpg")
+	document.getElementById('download').click();
 }
 
 function single_camera(id) {
