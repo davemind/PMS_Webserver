@@ -178,7 +178,16 @@ def bk_Camera():
 @app.route('/bk/Camera_View', methods=['GET'])
 def bk_Camera_View():
 	sql_command = 'select `camera_name`, `camera_url` from `cameras` where `user_id` = %s and state = %s' % (session['user_id'], '1')
-	return json.dumps(get_full_data(sql_command))
+	cameras = get_full_data(sql_command)
+	for i, camera in enumerate(cameras):
+		camera['ID'] = "1_" + str(i + 1)
+		camera['categoryId'] = "1"
+	cameras.insert(0, {
+		'ID': "1",
+		'camera_name': "cameras",
+		'expanded': True
+	})
+	return json.dumps(cameras)
 
 @app.route('/bk/Video', methods=['GET'])
 def bk_Video():

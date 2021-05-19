@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 	<title>Camera View</title>
 	
-	<link rel="stylesheet/less" type="text/css" href="/static/css/site.less" />
+	<link rel="stylesheet/less" type="text/css" href="/static/css/site_camera_view.less" />
 	<!-- Font Awesome -->
     <link rel="stylesheet" href="/static/Login_v12/css/font-awesome.min.css">
 
@@ -64,7 +64,7 @@
 	<div class="row" id='menu_area'>
         <div class="page-content-push"></div>
         <div id="header">
-            <div class="content">
+            <div class="content" style="max-width: 1500px;">
                 <a class="logo indent" href="../"></a>
                 <div class="menu">
                     <div id="menu"></div>
@@ -92,18 +92,22 @@
         </div>
 	</div>
 		<!-------------------------------Render Body Part---------------------------------------------------------------------------------->
-<section class="content" style="padding: 0px 0px 0px 20px; max-width: 1900px;">
+<section class="content" style="padding: 0px 0px 0px 20px;">
     <!-- Main row -->
     <div class="row">
         <!-- Left col -->
-        <section class="col-lg-1">
+        <section class="col-lg-2">
             <div>
-                <div id="treeView"></div>
+                <div id="treeViewGrid"></div>
+				<br>
+				<div id="treeViewCameras"></div>
+				<br>
+				<div id="CameraViewButton"></div>
             </div>
         </section>
         <!-- /.Left col -->
         <!-- right col (We are only adding the ID to make the widgets sortable)-->
-        <section class="col-lg-11">
+        <section class="col-lg-10">
             <div>
                 <div id="camera_area"></div>
             </div>
