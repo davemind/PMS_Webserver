@@ -273,20 +273,5 @@ def bk_GetAllAlarmCategory():
 	update_record(updated_sql_command, (1, session['user_email'], 0))
 	return json.dumps(result)
 
-@app.route('/fileExists', methods=['POST'])
-def fileExists():
-	filepath = request.form.get('filepath')
-	return json.dumps({'existing': os.path.isfile(filepath)})
-
-from flask import make_response, send_file
-@app.route('/fileDownload', methods=['GET'])
-def fileDownload():
-	filepath = request.args.get('filepath')
-	if os.path.isfile(filepath):
-		response = make_response(send_file(filepath))
-		response.headers["Content-Disposition"] = "attachment; filename={};".format(os.path.basename(filepath))
-		return response
-	return jsonify('The source video does not exist. Please choose another video.')
-
 if __name__ == "__main__":
 	app.run(debug=True, host='0.0.0.0', port=5000, threaded=True)

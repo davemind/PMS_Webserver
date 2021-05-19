@@ -159,7 +159,8 @@ IVMS.Videos = function () {
             contentTemplate: function() {
                 return $("<div/>").append(
 					$("<p>" + video_data.video_filename + "</p>"),
-                    $("<video id='video_img' width='480' height='360' controls='controls' autoplay='' style='margin: 3px;' src=/static" + video_data.video_filename + "> </video>")
+                    $("<video id='video_img' width='480' height='360' controls='controls' autoplay='' style='margin: 3px;' src=/static" + video_data.video_filename + "> </video>"),
+					$("<a id='download' href='' download=''></a>"),
                 );
             },
             showTitle: true,
@@ -176,25 +177,11 @@ IVMS.Videos = function () {
 				options: { 
 					icon: 'download',
 					onClick: function(e) { 
-						var filePath = $("#video_img").attr("src").substring(1);
-						$.ajax({
-							url: "/fileExists",
-							data: {'filepath': filePath},
-							type: "POST",
-							error: function (result) {
-								alert("There is a Problem, Try Again!");			
-							},
-							success: function (result) {
-								result = JSON.parse(result)
-								if (result['existing']){
-									top.location="/filedownload?filepath=" + filePath;
-								}
-								else {
-									alert('The source video does not exists!');
-								}
-							}
-						});	
-						
+						var filePath = "http://localhost:5000" + $("#video_img").attr("src");
+						var splits = filePath.split('/');
+						$("#download").attr("href", filePath)
+						$("#download").attr("download", splits[splits.length-1])
+						document.getElementById('download').click();
 					}
 				}
 			}]
