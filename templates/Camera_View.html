@@ -33,16 +33,39 @@
 			SaleViewer.baseApiUrl = "/bk/";
 		});
 	</script>
+    <style>
+        .video-cell {
+            background-color: #eeeeee;
+
+            float: left;
+            display: block;
+            position: relative; /*8888888*/
+
+            transition: height 0.6s, transform 0.6s;
+            -moz-transition: height 0.6s, -moz-transform 0.6s;
+            -webkit-transition: height 0.6s, -webkit-transform 0.6s;
+            -o-transition: height 0.6s, -o-transform 0.6s;
+
+        }
+ 		.camera_title {
+		    position: absolute;
+			background: color(255,255,255, 10);
+			background-color: #fff;
+			opacity: 0.7;
+			padding: 2px;
+			margin: 1px;
+		}
+   </style>
 	
 	<script src="static/scripts/pages/Camera_View.js"></script>
 </head>
-<body id="salesviewer" onload="myFunction()">
+<body id="salesviewer">
     <div class="page-content-wrapper">
+	<div class="row" id='menu_area'>
         <div class="page-content-push"></div>
         <div id="header">
             <div class="content">
                 <a class="logo indent" href="../"></a>
-                
                 <div class="menu">
                     <div id="menu"></div>
                     <div style="float:left;">
@@ -67,17 +90,28 @@
                 </div>
 
         </div>
+	</div>
 		<!-------------------------------Render Body Part---------------------------------------------------------------------------------->
-		<link rel="stylesheet" href="static/css/products.css" />
-
-		<div class="white">
-			<div class="content" style="padding: 1px; max-width: 1900px;">
-				<div class="page" style="align-items: center;">
-					<div class="layout-box" >
-					</div>
-				</div>
-			</div>
-		</div>
+<section class="content" style="padding: 0px 0px 0px 20px; max-width: 1900px;">
+    <!-- Main row -->
+    <div class="row">
+        <!-- Left col -->
+        <section class="col-lg-1">
+            <div>
+                <div id="treeView"></div>
+            </div>
+        </section>
+        <!-- /.Left col -->
+        <!-- right col (We are only adding the ID to make the widgets sortable)-->
+        <section class="col-lg-11">
+            <div>
+                <div id="camera_area"></div>
+            </div>
+        </section>
+        <!-- right col -->
+    </div>
+    <!-- /.row (main row) -->
+</section>
     </div>
 	<div id="noti_popup"></div>
 </body>
