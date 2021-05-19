@@ -3,9 +3,11 @@
 window.SaleViewer = window.SaleViewer || {};
 var cameras, st_index;
 var title_area_height, menu_area_height, max_height, max_width;
-var camera_num;
+var camera_num, rows, cols;
 var treeViewCameras;
 var cameras_info;
+var streaming_address_pref = 'http://192.168.1.131:8080/'
+var player;
 
 $(function(){
 	title_area_height = 0;//$('#title_area').height() + 15;
@@ -59,9 +61,9 @@ $(function(){
         onItemClick: function(e) {
 			if (e.itemData.name == "Grid Settings") return;
 			var item_info = e.itemData.name.split(' ');
-			var rows = parseInt(item_info[0]);
-			var cols = parseInt(item_info[2]);
-			grid_setting(rows, cols);
+			rows = parseInt(item_info[0]);
+			cols = parseInt(item_info[2]);
+			grid_setting();
         }
     });
     treeViewCameras = $("#treeViewCameras").dxTreeView({ 
@@ -86,13 +88,14 @@ $(function(){
 			var nodes = treeViewCameras.getSelectedNodes();
 			for(var i = 0; i < nodes.length; i++){
 				if (nodes[i].itemData.ID == "1") continue;
-				cameras_info.push({camera_name: nodes[i].itemData.camera_name, camera_url: nodes[i].itemData.camera_url})
+				//cameras_info.push({camera_name: nodes[i].itemData.camera_name, camera_url: nodes[i].itemData.camera_url})
+				cameras_info.push(nodes[i].itemData.camera_name)
 			}
-			camera_assign();
+			grid_setting();
 		}
 	});
-
-	grid_setting(2, 3)
+	rows = 2; cols = 3;
+	grid_setting()
 
 	$.ajax({
 		url: '/bk/Camera_View',
@@ -116,41 +119,60 @@ function getRandomColor() {
 	return color;
 }
 
-function grid_setting(rows, cols) {
+function grid_setting() {
+	if (cameras_info == undefined) cameras_info = [];
+	if (player != undefined) {
+		player.forEach(player_finish);
+	}
+	player = [];
 	$('#camera_area').children().remove();
 	camera_num = rows * cols;
 	var cell_width = parseInt(max_width / cols) - 1;
 	var cell_height = parseInt(max_height / rows);
 	for (var i = 0; i < camera_num; i++){
+		var video_id = 'video_js_id' + String(i);
+		var vcell_str;
+		if (i < cameras_info.length){
+			vcell_str = "<video-js id='" + video_id + "' class='vjs-default-skin camera_video' controls preload='auto'>"
+			vcell_str += "<source src='" + streaming_address_pref + cameras_info[i] + ".m3u8' type='application/x-mpegURL'>"
+			vcell_str += "</video-js>"
+		}
+		else {
+			vcell_str = "<img class='camera_video' src='static/images/no connected.jpg'/>"
+		}
 		var acell = $('<div/>');
 		var pcell = $("<p id='camera_name" + String(i) + "' class='camera_title'></p>");
-		var vcell = $("<a href='#section2'><img id='camera_url" + String(i) + "' class='camera_video' src='static/images/no connected.jpg'/></a>");
+		var vcell = $(vcell_str);
 		acell.addClass('video-cell');
 		//acell.css('background-color', getRandomColor());
 		pcell.appendTo(acell);
 		vcell.appendTo(acell);
 		acell.appendTo($('#camera_area'));
+		if (i < cameras_info.length){
+			player.push(videojs(video_id));
+		}
+		/*<video-js id="video_id1" class="vjs-default-skin" controls preload="auto" width="640" height="360">
+		<source src="http://192.168.1.131:8080/stef.m3u8" type="application/x-mpegURL">
+		</video-js>*/
 	}
+	player.forEach(player_start);
 	$('.video-cell').width(cell_width);
 	$('.video-cell').height(cell_height);
 	$('.camera_video').width(cell_width * 0.99);
 	$('.camera_video').height(cell_height * 0.99);
-	camera_assign();
 }
 
-function camera_assign() {
-	var address = window.location.protocol + "//" + window.location.hostname + ":5001/video_feed1?url=";
-	if (cameras_info == undefined) return;
-	var uplimit = Math.min(camera_num, cameras_info.length)
-	for (var i = 0; i < uplimit; i++){
-		document.getElementById("camera_name" + String(i)).textContent = cameras_info[i].camera_name;
-		$("#camera_url" + String(i)).attr("src", address + cameras_info[i].camera_url);
-	}
-	for (var i = uplimit; i < camera_num; i++){
-		document.getElementById("camera_name" + String(i)).textContent = "";
-		$("#camera_url" + String(i)).attr("src", "static/images/no connected.jpg");
-	}	
-};
+function player_start(single_player, index){
+	single_player.ready(function() {
+	  setTimeout(function() {
+		single_player.autoplay('muted');
+	  }, 1000);
+	});
+}
+
+function player_finish(single_player, index){
+	single_player.dispose();
+}
 
 function single_camera(id) {
 	var cam_url = $("#camera_url" + id.toString()).attr("src");
