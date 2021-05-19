@@ -93,7 +93,7 @@ def check_camera_url_exists(camera_url, camera_id=None):
 #sql_command = 'select `id`, `camera_name`, `camera_url`, `server_url`, `state`, `location` from `cameras` where `user_id` = %s' % session['user_id']
 @app.route('/bk/Camera', methods=['POST'])
 def bk_camera_add():
-	camera_name = request.form.get('camera_name')
+	camera_name = request.form.get('camera_name').replace(' ', '')
 	camera_url = request.form.get('camera_url')
 	state = request.form.get('state')
 	location = request.form.get('location')
@@ -107,7 +107,7 @@ def bk_camera_add():
 
 @app.route('/bk/Camera', methods=['PUT'])
 def bk_camera_edit():
-	camera_name = request.form.get('camera_name')
+	camera_name = request.form.get('camera_name').replace(' ', '')
 	camera_url = request.form.get('camera_url')
 	camera_id = request.form.get('id')
 	state = request.form.get('state')
