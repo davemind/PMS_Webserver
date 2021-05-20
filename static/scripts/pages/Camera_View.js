@@ -6,7 +6,8 @@ var title_area_height, menu_area_height, max_height, max_width;
 var camera_num, rows, cols;
 var treeViewCameras;
 var cameras_info;
-var streaming_address_pref = 'http://192.168.1.131:8080/'
+//var streaming_address_pref = 'http://192.168.1.131:8080/'
+var streaming_address_pref =  window.location.protocol + "//" + window.location.hostname + ":5002/"
 var player;
 var canvas = document.createElement('canvas');
 var context = canvas.getContext('2d');
@@ -148,14 +149,28 @@ function grid_setting() {
 		acell.addClass('video-cell');
 		pcell.appendTo(acell);
 		vcell.appendTo(acell);
-		if (i < cameras_info.length){
-			var bcell = $('<button onclick="snapshot(' + "'" + video_id + "'" + ')">SnapShot</button>');
-			bcell.appendTo(acell);
-		}
+		//if (i < cameras_info.length){
+		//	var bcell = $('<button onclick="snapshot(' + "'" + video_id + "'" + ')">SnapShot</button>');
+		//	bcell.appendTo(acell);
+		//}
 		acell.appendTo($('#camera_area'));
 		if (i < cameras_info.length){
 			document.getElementById("camera_name" + String(i)).textContent = cameras_info[i];
 			player.push(videojs(video_id));
+			  //var player = videojs('my-player');
+			  var button = videojs.getComponent('Button');
+			  var closeButton = videojs.extend(button, {
+				constructor: function() {
+				  button.apply(this, arguments);
+				  this.controlText("Snapshot");
+				  this.addClass('vjs-icon-share');
+				},
+				handleClick: function() {
+				  snapshot(this.player().id())
+				}
+			  });
+			  videojs.registerComponent('closeButton', closeButton);
+			  player[i].getChild('controlBar').addChild('closeButton', {});
 		}
 	}
 	player.forEach(player_start);
