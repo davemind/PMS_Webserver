@@ -2,3 +2,5 @@
 *.pyc
 # videos
 static/video
+VideoStreaming/bin/*.ts
+VideoStreaming/bin/*.m3u8
