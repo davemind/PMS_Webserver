@@ -177,7 +177,7 @@ function grid_setting() {
 	$('.video-cell').width(cell_width);
 	$('.video-cell').height(cell_height);
 	$('.camera_video').width(cell_width * 0.99);
-	$('.camera_video').height(cell_height * 0.9);
+	$('.camera_video').height(cell_height * 0.99);
 	$('.camera_video_empty').width(cell_width * 0.99);
 	$('.camera_video_empty').height(cell_height * 0.99);
 }
