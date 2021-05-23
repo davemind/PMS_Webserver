@@ -1,8 +1,9 @@
 import pymysql
 from datetime import timezone, datetime
+from common import sql_host, sql_user, sql_db
 
 def get_db_cursor():
-	db = pymysql.connect(host='192.168.1.131', user='root', db='vms')
+	db = pymysql.connect(host=sql_host, user=sql_user, db=sql_db)
 	cur = db.cursor()
 	return db, cur
 

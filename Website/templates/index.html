@@ -88,6 +88,7 @@
 				success: function (result) {
 					var data = JSON.parse(result);
 					if (data['statusCode'] == '200'){
+						localStorage.setItem('user_name', data['user_name'])
 						if (data['message'] == 'admin'){
 							top.location="/User"
 						} else {

@@ -1,13 +1,13 @@
 from flask import Flask, render_template, request, json, session, Response, jsonify
 from responses import error_400_message, error_401_message, error_403_message, success_200_message
-import os, cv2, datetime, base64
+import os, cv2, datetime, base64, pickle
 from datetime import timedelta
+from common import grid_setting_file
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=300)
 app.config['SESSION_PERMANENT'] = True
-
 
 ############################   backend   ############################
 from engine import log_in
@@ -23,9 +23,39 @@ def bk_user_login():
 		session['admin'] = (result_dict['message'] == 'admin')
 		session['user_id'] = id
 		session['user_email'] = email
-		#print(session)
-	#print(user_name, password, result_dict)
+		session['user_name'] = result_dict['user_name']
+		if not os.path.isfile(grid_setting_file):
+			session['grid_setting_info'] = [2, 3]
+			grid_setting_info = {session['user_name']: session['grid_setting_info']}
+			with open(grid_setting_file, 'wb') as file:
+				pickle.dump(grid_setting_info, file)
+		else:
+			with open(grid_setting_file, 'rb') as file:
+				grid_setting_info = pickle.load(file)
+			if session['user_name'] not in grid_setting_info:
+				session['grid_setting_info'] = [2, 3]
+				grid_setting_info = {session['user_name']: session['grid_setting_info']}
+				with open(grid_setting_file, 'wb') as file:
+					pickle.dump(grid_setting_info, file)
+			else:
+				session['grid_setting_info'] = grid_setting_info[session['user_name']]
 	return json.dumps(result_dict)
+
+@app.route('/bk/gridSetting', methods=['Get'])
+def bk_grid_setting_get():
+	return json.dumps({'grid_setting_info': session['grid_setting_info']})
+
+@app.route('/bk/gridSetting', methods=['PUT'])
+def bk_grid_setting_update():
+	rows = request.form.get('rows')
+	cols = request.form.get('cols')
+	with open(grid_setting_file, 'rb') as file:
+		grid_setting_info = pickle.load(file)
+	session['grid_setting_info'] = [rows, cols]
+	grid_setting_info = {session['user_name']: session['grid_setting_info']}
+	with open(grid_setting_file, 'wb') as file:
+		pickle.dump(grid_setting_info, file)
+	return json.dumps({'grid_setting_info': session['grid_setting_info']})
 
 from sql import get_one_record
 from sql import update_record

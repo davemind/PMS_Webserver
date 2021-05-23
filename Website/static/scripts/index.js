@@ -19,7 +19,7 @@ $(function () {
         indicatingSet: ['#90ba58', '#eeba69', '#a37182'],
         gradientSet: ['#78b6d9', '#eeba69']
     });
-
+	document.getElementById("username").textContent = 'Welcome ' + localStorage.getItem('user_name') + '!';
 });
 
 function myTimer() {
