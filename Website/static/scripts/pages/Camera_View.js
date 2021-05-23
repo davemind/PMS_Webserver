@@ -62,6 +62,7 @@ $(function(){
 	$('#GridSettingButton').dxButton({
 		text: 'Make Grid',
 		type: "success",
+		width: 150,
 		onClick: function() {
 			var data = formWidget.option("formData");
 			if (!formWidget.validate().isValid){
@@ -100,6 +101,7 @@ $(function(){
     }).dxTreeView("instance");
 	$('#CameraViewButton').dxButton({
 		text: 'Camera View',
+		width: 150,
 		onClick: function() {
 			cameras_info = [];
 			var nodes = treeViewCameras.getSelectedNodes();
