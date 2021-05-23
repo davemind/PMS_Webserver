@@ -222,16 +222,19 @@ def bk_Camera_View():
 @app.route('/bk/Video', methods=['GET'])
 def bk_Video():
 	timeline = request.args.get('timeline')
-	if timeline == 'All' or timeline is None:
-		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` ORDER BY `start_time` DESC;'
-	elif timeline == 'Today':
-		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE DATE(`start_time`) = DATE(NOW()) ORDER BY `start_time` DESC;'
-	elif timeline == 'This Week':
-		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE WEEK(`start_time`) = WEEK(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
-	elif timeline == 'This Month':
-		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE MONTH(`start_time`) = MONTH(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
-	elif timeline == 'This Year':
-		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+	if timeline is not None:
+		if timeline == 'All':
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` ORDER BY `start_time` DESC;'
+		elif timeline == 'Today':
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE DATE(`start_time`) = DATE(NOW()) ORDER BY `start_time` DESC;'
+		elif timeline == 'This Week':
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE WEEK(`start_time`) = WEEK(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+		elif timeline == 'This Month':
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE MONTH(`start_time`) = MONTH(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+		elif timeline == 'This Year':
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+	else:
+		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE {} ORDER BY `start_time` DESC;'.format(request.args.get('where_cmd'))
 	cameras = get_full_data(sql_command)
 	return json.dumps(cameras)
 
