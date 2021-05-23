@@ -20,6 +20,7 @@ IVMS.Videos = function () {
 		$t_fixed.width(e.element.width());
 	}
     var self = this,
+		root_path = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port,
 		popup = null,
         gridOptions = {
 			editing: {
@@ -28,6 +29,10 @@ IVMS.Videos = function () {
 				allowUpdating: false,
 				allowDeleting: true,
 				useIcons: true
+			},
+			selection: {
+				mode: "multiple",
+				"showCheckBoxesMode": "onClick"
 			},
             dataSource: {
                 store: new Array()
@@ -40,9 +45,6 @@ IVMS.Videos = function () {
 				allowedPageSizes: [10, 20, 30, 40, 50, "all"],
 				showInfo: true,
 			},
-            selection: {
-                enabled: false
-            },
 			filterRow: {
                 visible: true
             },
@@ -160,7 +162,6 @@ IVMS.Videos = function () {
                 return $("<div/>").append(
 					$("<p>" + video_data.video_filename + "</p>"),
                     $("<video id='video_img' width='480' height='360' controls='controls' autoplay='' style='margin: 3px;' src=/static" + video_data.video_filename + "> </video>"),
-					$("<a id='download' href='' download=''></a>"),
                 );
             },
             showTitle: true,
@@ -177,7 +178,7 @@ IVMS.Videos = function () {
 				options: { 
 					icon: 'download',
 					onClick: function(e) { 
-						var filePath = "http://localhost:5000" + $("#video_img").attr("src");
+						var filePath = root_path + $("#video_img").attr("src");
 						var splits = filePath.split('/');
 						$("#download").attr("href", filePath)
 						$("#download").attr("download", splits[splits.length-1])
@@ -189,16 +190,18 @@ IVMS.Videos = function () {
 
     self.init = function () {
 		$('#exportPdfButton').dxButton({
-			icon: 'static/images/icons/pdf1.png',
-			text: 'Export to PDF',
+			icon: 'download',
+			text: 'Download Selected Videos',
 			onClick: function() {
-			  const doc = new jsPDF();
-			  DevExpress.pdfExporter.exportDataGrid({
-				jsPDFDocument: doc,
-				component: gridContainer.dxDataGrid('instance')
-			  }).then(function() {
-				doc.save('Videos.pdf');
-			  });
+				var selected = grid.getSelectedRowsData();
+				for(var i = 0; i < selected.length; i++){
+					var filePath = root_path + "/static" + selected[i].video_filename;
+					var splits = filePath.split('/');
+					$("#download").attr("href", filePath)
+					$("#download").attr("download", splits[splits.length-1])
+					document.getElementById('download').click();
+				}
+				grid.clearSelection();
 			}
 		});
 		$('#exportxlsxButton').dxButton({
@@ -247,9 +250,8 @@ IVMS.Videos = function () {
 						result = JSON.parse(result)
 						grid.option("dataSource", { store: result});
 						grid.endCustomLoading();
-						if (selectFirst === undefined || selectFirst) grid.selectRows(dataSource.store[0]);	
 					}
-				});	
+				});
 			},
 			displayExpr: "name",
 			keyExpr: "id",
@@ -261,10 +263,7 @@ IVMS.Videos = function () {
 		var gridContainer = $("#grid");
         gridContainer.dxDataGrid(gridOptions);
         var grid = gridContainer.data("dxDataGrid");
-		var loadOptions = {};
-		var selectFirst;          
 		grid.beginCustomLoading();
-		
 		$.ajax({
             url: "/bk/Video",
 			data: {'timeline': "Today"},
