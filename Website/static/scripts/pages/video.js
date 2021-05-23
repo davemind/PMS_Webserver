@@ -101,6 +101,10 @@ IVMS.Videos = function () {
 					dataField: "location",
 					caption: "Camera Location",
 				},
+				{
+					dataField: "zone_name",
+					caption: "Zone",
+				},
                 {
 					type: "buttons",
 					width: 100, 
@@ -232,11 +236,17 @@ IVMS.Videos = function () {
 					text: "Camera Location"
 				},
 			},
+			{
+				dataField: "zone_name",
+				label: {
+					text: "Zone Name"
+				},
+			},
 		]			
 	},
 	popupOptions_custom_search = {
 		width: 800,
-		height: 300,
+		height: 350,
 		contentTemplate: function () {
 			return $("<div style='text-align:right;'><div/>").append(
 				$('<div id="grid_custom_search" class="products" style="padding:15px;"></div>').dxForm(form_grid),
@@ -264,6 +274,9 @@ IVMS.Videos = function () {
 						}
 						if (data['camera_location'] != undefined && data['camera_location'] != ''){
 							where_cmd += " and cameras.`location` = '" + data['camera_location'] + "'";
+						}
+						if (data['zone_name'] != undefined && data['zone_name'] != ''){
+							where_cmd += " and zones.`name` = '" + data['zone_name'] + "'";
 						}
 						var grid = $("#grid").data("dxDataGrid");
 						grid.beginCustomLoading();

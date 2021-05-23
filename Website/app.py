@@ -158,6 +158,15 @@ def bk_camera_delete():
 	update_record(sql_command, camera_id)
 	return json.dumps(success_200_message('ok'))
 
+@app.route('/bk/Zone/Camera', methods=['PUT'])
+def bk_camera_zone_edit():
+	camera_id = request.form.get('id')
+	state = request.form.get('state')
+	zone_id = request.form.get('zone_id')
+	sql_command = 'update `cameras` set `state` = %s, `zone_id` = %s WHERE `id` = %s'
+	update_record(sql_command, (state, zone_id, camera_id))
+	return json.dumps(success_200_message('ok'))
+
 @app.route('/bk/Video', methods=['DELETE'])
 def bk_Video_delete():
 	camera_id = request.form.get('id')
@@ -252,6 +261,7 @@ def bk_Camera_View():
 		zone['ID'] = "1_" + str(i + 1)
 		zone['categoryId'] = "1"
 		zone['camera_name'] = zone['name']
+		zone['expanded'] = True
 		zone_ids[zone['id']] = zone['ID']
 	sql_command = 'select `camera_name`, `camera_url`, `zone_id` from `cameras` where `user_id` = %s and state = %s' % (session['user_id'], '1')
 	cameras = get_full_data(sql_command)
@@ -270,17 +280,17 @@ def bk_Video():
 	timeline = request.args.get('timeline')
 	if timeline is not None:
 		if timeline == 'All':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` ORDER BY `start_time` DESC;'
 		elif timeline == 'Today':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE DATE(`start_time`) = DATE(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE DATE(`start_time`) = DATE(NOW()) ORDER BY `start_time` DESC;'
 		elif timeline == 'This Week':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE WEEK(`start_time`) = WEEK(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE WEEK(`start_time`) = WEEK(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
 		elif timeline == 'This Month':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE MONTH(`start_time`) = MONTH(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE MONTH(`start_time`) = MONTH(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
 		elif timeline == 'This Year':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
 	else:
-		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location` FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` WHERE {} ORDER BY `start_time` DESC;'.format(request.args.get('where_cmd'))
+		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE {} ORDER BY `start_time` DESC;'.format(request.args.get('where_cmd'))
 	cameras = get_full_data(sql_command)
 	return json.dumps(cameras)
 
@@ -351,7 +361,8 @@ def api_GetNewAlarmNumber():
 			update_record(updated_sql_command, (1, record[0]))
 	# send mail
 	if len(body) > 0: mail_send(session['user_email'], record[1], body)
-	return str(len(records))
+	num = len(records)
+	return str(num) if num < 10 else "+"
 
 @app.route('/Alarm/GetAllAlarmCategory', methods=['GET'])
 def bk_GetAllAlarmCategory():
