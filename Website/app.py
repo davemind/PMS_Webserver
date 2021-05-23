@@ -39,6 +39,7 @@ def bk_user_login():
 					pickle.dump(grid_setting_info, file)
 			else:
 				session['grid_setting_info'] = grid_setting_info[session['user_name']]
+		result_dict['grid_setting_info'] = session['grid_setting_info']
 	return json.dumps(result_dict)
 
 @app.route('/bk/gridSetting', methods=['Get'])

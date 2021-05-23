@@ -17,59 +17,73 @@ $(function(){
 	menu_area_height = $('#menu_area').height();
 	max_height = window.outerHeight - menu_area_height - title_area_height;
 	max_width = parseInt((window.outerWidth - 20) * 10 / 12) - 30;
-	var TreeViewItems = [
-		{
-			ID: "1",
-			name: "Grid Settings",
-			expanded: true
-		},
-		{
-			ID: "1_1",
-			categoryId: "1",
-			name: "2 x 3",
-			//icon: "static/icons/2 x 3.PNG",
-		},
-		{
-			ID: "1_2",
-			categoryId: "1",
-			name: "3 x 4",
-			//icon: "static/icons/3 x 4.PNG",
-		},
-		{
-			ID: "1_3",
-			categoryId: "1",
-			name: "4 x 5",
-			//icon: "static/icons/4 x 5.PNG",
-		},
-		{
-			ID: "1_4",
-			categoryId: "1",
-			name: "5 x 6",
-			//icon: "static/icons/5 x 6.PNG",
-		},
-		{
-			ID: "1_5",
-			categoryId: "1",
-			name: "6 x 7",
-			//icon: "static/icons/6 x 7.PNG",
-		},
-	]; // a.concat(b);
-    $("#treeViewGrid").dxTreeView({ 
-        items: TreeViewItems,
-        dataStructure: "plain",
-        parentIdExpr: "categoryId",
-        keyExpr: "ID",
-        displayExpr: "name",
-		height: max_height * 0.3,
-        onItemClick: function(e) {
-			if (e.itemData.name == "Grid Settings") return;
-			var item_info = e.itemData.name.split(' ');
-			rows = parseInt(item_info[0]);
-			cols = parseInt(item_info[2]);
+	rows = parseInt(localStorage.getItem('rows')); cols = parseInt(localStorage.getItem('cols'));
+	grid_setting();
+	
+	var form_grid = {
+		formData: {"rows": localStorage.getItem('rows'), "cols": localStorage.getItem('cols')},
+		labelLocation: "left",
+		minColWidth: 100,
+		colCount: 2,
+		items: [
+			{
+				dataField: "rows",
+				label: {
+					text: "rows"
+				},
+				validationRules: [{
+					type: "pattern",
+					pattern: "^([1-9][0-9]*)$",
+					message: "Number of rows should be integer larger than zero."
+				},
+				{
+					type: "required",
+					message: "Number of rows is required"
+				}]
+			},
+			{
+				dataField: "cols",
+				label: {
+					text: "cols"
+				},
+				validationRules: [{
+					type: "pattern",
+					pattern: "^([1-9][0-9]*)$",
+					message: "Number of cols should be integer larger than zero."
+				},
+				{
+					type: "required",
+					message: "Number of cols is required"
+				}]
+			},
+		]			
+	};
+	var formWidget = $("#GridSetting").dxForm(form_grid).dxForm("instance");
+	$('#GridSettingButton').dxButton({
+		text: 'Make Grid',
+		type: "success",
+		onClick: function() {
+			var data = formWidget.option("formData");
+			if (!formWidget.validate().isValid){
+				return;
+			}
+			rows = parseInt(data["rows"]); cols = parseInt(data["cols"]);
 			grid_setting();
-        }
-    });
-    treeViewCameras = $("#treeViewCameras").dxTreeView({ 
+			localStorage.setItem('rows', data['rows'])
+			localStorage.setItem('cols', data['cols'])
+			$.ajax({
+				url: '/bk/gridSetting',
+				method: 'PUT',
+				data: data,
+				error: function (result) {
+					alert("There is a Problem, Try Again!");			
+				},
+				success: function (result) {
+				}
+			});	
+		}
+	});
+   treeViewCameras = $("#treeViewCameras").dxTreeView({ 
         items: [{}],
         dataStructure: "plain",
         parentIdExpr: "categoryId",
@@ -97,8 +111,6 @@ $(function(){
 			grid_setting();
 		}
 	});
-	rows = 2; cols = 3;
-	grid_setting()
 
 	$.ajax({
 		url: '/bk/Camera_View',
