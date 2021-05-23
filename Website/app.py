@@ -34,7 +34,7 @@ def bk_user_login():
 				grid_setting_info = pickle.load(file)
 			if session['user_name'] not in grid_setting_info:
 				session['grid_setting_info'] = [2, 3]
-				grid_setting_info = {session['user_name']: session['grid_setting_info']}
+				grid_setting_info[session['user_name']] = session['grid_setting_info']
 				with open(grid_setting_file, 'wb') as file:
 					pickle.dump(grid_setting_info, file)
 			else:
@@ -166,8 +166,8 @@ def bk_Video_delete():
 	return json.dumps(success_200_message('ok'))
 
 ############################   menu   ############################
-usual_menu_items = ['Camera_View', 'Video', 'Log_out']
-usual_menu_texts = ['Camera_View', 'Video', 'Log out']
+usual_menu_items = ['Camera', 'Camera_View', 'Video', 'Log_out']
+usual_menu_texts = ['Camera', 'Camera_View', 'Video', 'Log out']
 admin_menu_items = ['User', 'Camera', 'Video', 'Log_out']
 admin_menu_texts = ['User', 'Camera', 'Video', 'Log out']
 @app.route('/bk/Menu', methods=['GET'])
@@ -208,17 +208,25 @@ def bk_Camera():
 
 @app.route('/bk/Camera_View', methods=['GET'])
 def bk_Camera_View():
-	sql_command = 'select `camera_name`, `camera_url` from `cameras` where `user_id` = %s and state = %s' % (session['user_id'], '1')
+	sql_command = 'select `id`, `name` from `zones` where `user_id` = %s' % (session['user_id'])
+	zones = get_full_data(sql_command)
+	zone_ids = {}
+	for i, zone in enumerate(zones):
+		zone['ID'] = "1_" + str(i + 1)
+		zone['categoryId'] = "1"
+		zone['camera_name'] = zone['name']
+		zone_ids[zone['id']] = zone['ID']
+	sql_command = 'select `camera_name`, `camera_url`, `zone_id` from `cameras` where `user_id` = %s and state = %s' % (session['user_id'], '1')
 	cameras = get_full_data(sql_command)
 	for i, camera in enumerate(cameras):
-		camera['ID'] = "1_" + str(i + 1)
-		camera['categoryId'] = "1"
+		camera['ID'] = zone_ids[camera['zone_id']] + '_' + str(i + 1)
+		camera['categoryId'] = zone_ids[camera['zone_id']]
 	cameras.insert(0, {
 		'ID': "1",
 		'camera_name': "cameras",
 		'expanded': True
 	})
-	return json.dumps(cameras)
+	return json.dumps(cameras + zones)
 
 @app.route('/bk/Video', methods=['GET'])
 def bk_Video():

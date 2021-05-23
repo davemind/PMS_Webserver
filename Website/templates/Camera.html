@@ -4,19 +4,20 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-	<title>Camera Manage</title>
-	<script src="static/js/polyfill.min.js"></script>
-	<script src="static/js/exceljs.min.js"></script>
-	<script src="static/js/FileSaver.min.js"></script>
+	<title>Camera Zone Setting</title>
 	
-	<!--<link href="/static/css/dx.common.css" rel="stylesheet"> -->
-	<!--<link href="/static/css/dx.light.css" rel="stylesheet"> -->
-	<!--<link href="/static/css/site.css" rel="stylesheet"> -->
-	<link rel="stylesheet/less" type="text/css" href="/static/css/site.less" />
-	<script src="static/js/less.js" ></script>
+	<link rel="stylesheet/less" type="text/css" href="/static/css/site_camera_view.less" />
 	<!-- Font Awesome -->
     <link rel="stylesheet" href="/static/Login_v12/css/font-awesome.min.css">
+
+	<!-- Theme -->
+    <link rel="stylesheet" href="/static/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/bootstrap/dist/css/adminlte.min.css">
+	<link rel="stylesheet" href="/static/bootstrap/dist/css/AdminLTE.css">
+    <link rel="stylesheet" href="/static/bootstrap/dist/css/skins/skin-blue.css">
+
 	<link rel="stylesheet" href="/static/css/head.css" />
+	<script src="static/js/less.js" ></script>
 	
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/20.2.4/css/dx.common.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/20.2.4/css/dx.light.css" />
@@ -25,37 +26,65 @@
 	<script src="static/js/dx.all.js"></script>
 	<script src="static/scripts/index.js"></script>
 	<script src="static/scripts/pages/topmenu.js"></script>
+
+	<!-- Video JS -->
+	<link href="/static/videojs/css/video-js.css" rel="stylesheet">
+	<link href="/static/videojs/css/videojs.snapshot.css" rel="stylesheet">
+	<script src="/static/videojs/js/video.js"></script>
+	<script src="/static/videojs/js/videojs-http-streaming.js"></script>
+	<script src="/static/videojs/js/videojs-snapshot.js"></script>
+	<script src="/static/videojs/js/plugins/videojs.imageCapture.js"></script>
+
 	<script>
 		$(function () {
 			SaleViewer.criteria = "";
 			SaleViewer.baseApiUrl = "/bk/";
 		});
 	</script>
+    <style>
+        .video-cell {
+            background-color: #eeeeee;
+
+            float: left;
+            display: block;
+            position: relative; /*8888888*/
+
+            transition: height 0.6s, transform 0.6s;
+            -moz-transition: height 0.6s, -moz-transform 0.6s;
+            -webkit-transition: height 0.6s, -webkit-transform 0.6s;
+            -o-transition: height 0.6s, -o-transform 0.6s;
+
+        }
+ 		.camera_title {
+		    position: absolute;
+			z-index: 1;
+			color: white;
+			padding: 2px;
+			margin: 1px;
+		}
+   </style>
 	
 	<script src="static/scripts/pages/Camera.js"></script>
-
 </head>
 <body id="salesviewer">
     <div class="page-content-wrapper">
+	<div class="row" id='menu_area'>
         <div class="page-content-push"></div>
         <div id="header">
-            <div class="content">
+            <div class="content" style="max-width: 1500px;">
                 <a class="logo indent" href="../"></a>
-                
                 <div class="menu">
                     <div id="menu"></div>
                     <div style="float:left;">
-                        <a class="btn" onclick="alarm_list()">
+                        <a class="btn" onclick="alarm_list()" style='color: #fff;'>
                             <i class="fa fa-bell noti_show" style="font-size:1.2em;"></i>
                             <span id="alarm_circle" class="fa fa-circle noti_none"></span>
                             <span class="num noti_show"></span>
                         </a>
                     </div>
-
-                    <div id="openPopupButton">
-                        <a><span class="info-link">?</span></a>
+                    <div style="float:right;">
+						<a class="btn" id='username' style='color: #fff;'></a>
                     </div>
-                   
                 </div>
                 <script>
 
@@ -64,26 +93,53 @@
                     topMenu.init();
                 
                 </script>
-                </div>
-
+            </div>
         </div>
+	</div>
 		<!-------------------------------Render Body Part---------------------------------------------------------------------------------->
-		<link rel="stylesheet" href="static/css/products.css" />
-
-		<div class="white">
-			<div class="content">
-				<div class="page" style="display: flex; align-items: center; justify-content: center;">
-					<div class="layout-box" >
-						<h3 class="indent">Camera</h3>
-						<div>
-							<div id="grid" class="products"></div>
-						</div>
-
-					</div>
-				</div>
-			</div>
-		</div>
+<section class="content" style="padding: 0px 0px 0px 20px;">
+    <!-- Main row -->
+    <div class="row">
+        <!-- Left margin col -->
+        <section class="col-lg-2">
+            <div>
+                <div id="Camera"></div>
+            </div>
+        </section>
+        <!-- /.Left margin col -->
+        <!-- Left col -->
+        <section class="col-lg-4">
+			<h1>
+				Zones
+				<small>add, edit, delete</small>
+			</h1>
+            <div>
+                <div id="Zone"></div>
+            </div>
+        </section>
+        <!-- /.Left col -->
+        <!-- Right col -->
+        <section class="col-lg-4">
+			<h1>
+				Cameras
+				<small>camera-zone setting</small>
+			</h1>
+            <div>
+                <div id="Camera"></div>
+            </div>
+        </section>
+        <!-- /.Right col -->
+        <!-- Right margin col -->
+        <section class="col-lg-2">
+            <div>
+                <div id="Camera"></div>
+            </div>
+        </section>
+        <!-- /.Right margin col -->
     </div>
-	<div id="noti_popup"></div>
+    <!-- /.row (main row) -->
+
+</section>
+    </div>
 </body>
 </html>

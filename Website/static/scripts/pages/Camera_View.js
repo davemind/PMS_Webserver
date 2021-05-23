@@ -92,12 +92,6 @@ $(function(){
         displayExpr: "camera_name",
 		showCheckBoxesMode: "normal",
 		height: max_height * 0.55,
-        onSelectionChanged: function(e) {
-            //console.log(e.itemData.selected);
-        },
-        onItemClick: function(e) {
-			console.log(e.itemData.selected);
-        }
     }).dxTreeView("instance");
 	$('#CameraViewButton').dxButton({
 		text: 'Camera View',
@@ -107,7 +101,7 @@ $(function(){
 			var nodes = treeViewCameras.getSelectedNodes();
 			for(var i = 0; i < nodes.length; i++){
 				if (nodes[i].itemData.ID == "1") continue;
-				//cameras_info.push({camera_name: nodes[i].itemData.camera_name, camera_url: nodes[i].itemData.camera_url})
+				if (nodes[i].itemData.ID.match(/_/g).length == 1) continue;
 				cameras_info.push(nodes[i].itemData.camera_name)
 			}
 			grid_setting();
