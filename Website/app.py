@@ -165,6 +165,40 @@ def bk_Video_delete():
 	update_record(sql_command, camera_id)
 	return json.dumps(success_200_message('ok'))
 
+def check_zone_name_exists(zone_name, zone_id=None):
+	if zone_id is None:
+		sql_command = 'select `id` from `zones` where `name` = %s and `user_id` = %s'
+		params = (zone_name, session['user_id'])
+	else:
+		sql_command = 'select `id` from `zones` where `name` = %s and `user_id` = %s and not `id` = %s'
+		params = (zone_name, session['user_id'], zone_id)
+	num, _ = get_one_record(sql_command, params)
+	return num > 0
+
+@app.route('/bk/Zone', methods=['POST'])
+def bk_zone_add():
+	zone_name = request.form.get('name')
+	if check_zone_name_exists(zone_name): return json.dumps(error_400_message('zone_name'))
+	sql_command = 'insert into `zones` (`name`, `user_id`) values (%s, %s)'
+	update_record(sql_command, (zone_name, session['user_id']))
+	return json.dumps(success_200_message('ok'))
+
+@app.route('/bk/Zone', methods=['PUT'])
+def bk_zone_edit():
+	zone_name = request.form.get('name')
+	zone_id = request.form.get('id')
+	if check_zone_name_exists(zone_name, zone_id): return json.dumps(error_400_message('zone_name'))
+	sql_command = 'update `zones` set `name` = %s WHERE `id` = %s'
+	update_record(sql_command, (zone_name, zone_id))
+	return json.dumps(success_200_message('ok'))
+
+@app.route('/bk/Zone', methods=['DELETE'])
+def bk_zone_delete():
+	zone_id = request.form.get('id')
+	sql_command = 'delete from `zones` WHERE `id` = %s'
+	update_record(sql_command, zone_id)
+	return json.dumps(success_200_message('ok'))
+
 ############################   menu   ############################
 usual_menu_items = ['Camera', 'Camera_View', 'Video', 'Log_out']
 usual_menu_texts = ['Camera', 'Camera_View', 'Video', 'Log out']
@@ -198,8 +232,11 @@ def bk_User():
 @app.route('/bk/Camera', methods=['GET'])
 def bk_Camera():
 	if session.get('admin') is False:
-		sql_command = 'select `id`, `camera_name`, `camera_url`, `server_url`, `state`, `location` from `cameras` where `user_id` = %s' % session['user_id']
-		return json.dumps(get_full_data(sql_command))
+		sql_command = 'select `id`, `camera_name`, `camera_url`, `server_url`, `state`, `location`, `zone_id` from `cameras` where `user_id` = %s' % session['user_id']
+		cameras = get_full_data(sql_command)
+		sql_command = 'select `id`, `name` from `zones` where `user_id` = %s' % session['user_id']
+		zones = get_full_data(sql_command)
+		return json.dumps({'cameras': cameras, 'admin': False, 'zones': zones})
 	sql_command = 'select `id`, `camera_name`, `camera_url`, `server_url`, `state`, `location`,`user_id` from `cameras`'
 	cameras = get_full_data(sql_command)
 	sql_command = 'select `id`, `name` from `tbl_admin` where `role_id` != 1'

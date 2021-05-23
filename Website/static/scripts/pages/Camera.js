@@ -2,209 +2,172 @@
 
 window.SaleViewer = window.SaleViewer || {};
 
-SaleViewer.Customers = function () {
-	
-
-    var self = this,
-		popup = null,
-        gridOptions = {
-			keyExpr: "id",
-			editing: {
-				mode: "popup",
-				allowAdding: true,
-				allowUpdating: true,
-				allowDeleting: true,
-				popup: {
-					title: "User Info",
-					showTitle: true,
-					width: 670,
-					height: 255,
-				},
-				useIcons: true
+$(function () {
+	var zoneGridOptions = {
+		keyExpr: "id",
+		editing: {
+			mode: "popup",
+			allowAdding: true,
+			allowUpdating: true,
+			allowDeleting: true,
+			popup: {
+				title: "Zone Info",
+				showTitle: true,
+				width: 370,
+				height: 205,
 			},
-            dataSource: {
-                store: new Array()
-            },
-            paging: {
-                enabled:false
-            },
-            selection: {
-                enabled: false
-            },
-			filterRow: {
-                visible: true
-            },
-			headerFilter: {
-				visible: true
+			form: {
+				colCount: 1,
+				items: [
+					{
+						dataField: "name",
+						caption: "Zone Name",
+						validationRules: [{
+							type: "required",
+							message: "Zone Name is required"
+						}]
+					},
+				],
 			},
-			export: {
-				enabled: true
-			},
-			onExporting: function(e) { 
-
-				var workbook = new ExcelJS.Workbook(); 
-				var worksheet = workbook.addWorksheet('Main sheet'); 
-				DevExpress.excelExporter.exportDataGrid({ 
-					worksheet: worksheet, 
-					component: e.component,
-					autoFilterEnabled: true,
-					customizeCell: function(options) {
-						var excelCell = options;
-						excelCell.font = { name: 'Arial', size: 12 };
-						excelCell.alignment = { horizontal: 'left' };
-					} 
-				}).then(function() {
-					workbook.xlsx.writeBuffer().then(function(buffer) { 
-						saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Camera.xlsx'); 
-					}); 
+			useIcons: true
+		},
+		dataSource: {
+			store: new Array()
+		},
+		paging: {
+			enabled:false
+		},
+		selection: {
+			enabled: false
+		},
+		filterRow: {
+			visible: true
+		},
+		headerFilter: {
+			visible: true
+		},
+		export: {
+			enabled: true
+		},
+		onExporting: function(e) { 
+			var workbook = new ExcelJS.Workbook(); 
+			var worksheet = workbook.addWorksheet('Main sheet'); 
+			DevExpress.excelExporter.exportDataGrid({ 
+				worksheet: worksheet, 
+				component: e.component,
+				autoFilterEnabled: true,
+				customizeCell: function(options) {
+					var excelCell = options;
+					excelCell.font = { name: 'Arial', size: 12 };
+					excelCell.alignment = { horizontal: 'left' };
+				} 
+			}).then(function() {
+				workbook.xlsx.writeBuffer().then(function(buffer) { 
+					saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Zone.xlsx'); 
 				}); 
-				e.cancel = true; 
+			}); 
+			e.cancel = true; 
+		},
+		summary: {
+			totalItems: [{
+				column: "name",
+				summaryType: "count",
+			}]
+		},
+		columns: [
+			{
+				dataField: "id",
+				caption: "ID",
+				alignment: "left",
+				width: "20%",
+				editing: false
 			},
-			summary: {
-				totalItems: [{
-					column: "name",
-					summaryType: "count",
+			{
+				dataField: "name",
+				caption: "Zone Name",
+				validationRules: [{
+					type: "required",
+					message: "Zone Name is required"
 				}]
 			},
-            columns: [
-                {
-                    dataField: "camera_name",
-					alignment: "left",
-					validationRules: [{
-						type: "required",
-						message: "camera_name is required"
-					}],
-					width: "12%"
-                },
-                {
-                    dataField: "camera_url",
-					alignment: "left",
-					validationRules: [{
-						type: "required",
-						message: "camera_url is required"
-					}]
-                },
-                {
-                    dataField: "state",
-					alignment: "left",
-					validationRules: [{
-						type: "required",
-						message: "state is required"
-					}],
-					lookup: {
-						dataSource: [{'id': 0, 'title': 'off'}, {'id': 1, 'title': 'on'}],
-						displayExpr: "title",
-						valueExpr: "id"
-					},
-					width: "8%"
-                },
-                {
-                    dataField: "location",
-					alignment: "left",
-					validationRules: [{
-						type: "required",
-						message: "location is required"
-					}],
-					width: "10%"
-                },
- 			],
-			showBorders: false,
-			columnAutoWidth:false,
-            showColumnLines: true,
-            showRowLines: false,
-			hoverStateEnabled: true,
-			//width:500,
-			onRowInserting: function(e) {
-				var newData = e.data;
-				$.ajax({
-					url: "/bk/Camera",
-					type: "POST",
-					data: newData,
-					error: function (result) {
-						alert("There is a Problem, Try Again!");
-					},
-					success: function (result) {
-						var data = JSON.parse(result);
-						if(data['statusCode'] == '400'){
-							if(data['message'] == 'camera_name'){
-								alert("The name is duplicated with other, Try Again!");
-							}
-							else if(data['message'] == 'camera_url'){
-								alert("The url is duplicated with other, Try Again!");
-							}
+		],
+		showBorders: false,
+		//columnAutoWidth: false,
+		showColumnLines: true,
+		showRowLines: false,
+		hoverStateEnabled: true,
+		onRowInserting: function(e) {
+			var newData = e.data;
+			$.ajax({
+				url: "/bk/Zone",
+				type: "POST",
+				data: newData,
+				error: function (result) {
+					alert("There is a Problem, Try Again!");
+				},
+				success: function (result) {
+					var data = JSON.parse(result);
+					if(data['statusCode'] == '400'){
+						if(data['message'] == 'zone_name'){
+							alert("The name is duplicated with other, Try Again!");
+						}
+					}
+					location.reload();
+				}
+			});
+		},
+		onRowUpdating: function(e) {
+			var newData = e.newData;
+			var fullData = e.key;
+			for (var key in newData){
+				fullData[key] = newData[key];
+			}
+			$.ajax({
+				url: "/bk/Zone",
+				type: "PUT",
+				data: fullData,
+				error: function (result) {
+					alert("There is a Problem, Try Again!");
+				},
+				success: function (result) {
+					var data = JSON.parse(result);
+					if(data['statusCode'] == '400'){
+						if(data['message'] == 'zone_name'){
+							alert("The name is duplicated with other, Try Again!");
 						}
 						location.reload();
 					}
-				});
-			},
-			onRowUpdating: function(e) {
-				var newData = e.newData;
-				var fullData = e.key;
-				for (var key in newData){
-					fullData[key] = newData[key];
 				}
-				$.ajax({
-					url: "/bk/Camera",
-					type: "PUT",
-					data: fullData,
-					error: function (result) {
-						alert("There is a Problem, Try Again!");
-					},
-					success: function (result) {
-						var data = JSON.parse(result);
-						if(data['statusCode'] == '400'){
-							if(data['message'] == 'camera_name'){
-								alert("The name is duplicated with other, Try Again!");
-							}
-							else if(data['message'] == 'camera_url'){
-								alert("The url is duplicated with other, Try Again!");
-							}
-							location.reload();
-						}
-					}
-				});
-			},
-			onRowRemoving: function(e) {
-				$.ajax({
-					url: "/bk/Camera",
-					type: "DELETE",
-					data: e.data,
-					error: function (result) {
-						alert("There is a Problem, Try Again!");
-						e.cancel = true;
-					},
-					success: function (result) {
-					}
-				});
-			},
-        };
-
-    self.init = function () {
-		
-		var gridContainer = $("#grid");
-        gridContainer.dxDataGrid(gridOptions);
-        var grid = gridContainer.data("dxDataGrid");
-		var loadOptions = {};
-		var category = "Camera";
-		var selectFirst;          
-		grid.beginCustomLoading();
-		
-		$.ajax({
-			url: SaleViewer.baseApiUrl + category,
-			data: loadOptions,
-			error: function (result) {
-				grid.endCustomLoading();
-				alert("There is a Problem, Try Again!");			
-			},
-			success: function (result) {
-				var res = JSON.parse(result);
-				grid.option("dataSource", { store: res});
-				grid.endCustomLoading();
-			}
-		});	
-    };
-};
-$(function () {
-    SaleViewer.customers = new SaleViewer.Customers();
-    SaleViewer.customers.init();
+			});
+		},
+		onRowRemoving: function(e) {
+			$.ajax({
+				url: "/bk/Zone",
+				type: "DELETE",
+				data: e.data,
+				error: function (result) {
+					alert("There is a Problem, Try Again!");
+					e.cancel = true;
+				},
+				success: function (result) {
+				}
+			});
+		},
+	};
+	var ZoneGrid = $("#Zone").dxDataGrid(zoneGridOptions).dxDataGrid("instance")
+	
+	ZoneGrid.beginCustomLoading();
+	$.ajax({
+		url: '/bk/Camera',
+		data: {},
+		error: function (result) {
+			alert("There is a Problem, Try Again!");
+			ZoneGrid.endCustomLoading();
+		},
+		success: function (result) {
+			result = JSON.parse(result);
+			ZoneGrid.option("dataSource", { store: result['zones']});
+			ZoneGrid.endCustomLoading();
+		}
+	});	
 });
