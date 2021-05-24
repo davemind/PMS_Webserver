@@ -266,9 +266,11 @@ def bk_Camera_View():
 		zone_ids[zone['id']] = zone['ID']
 	sql_command = 'select `camera_name`, `camera_url`, `zone_id` from `cameras` where `user_id` = %s and state = %s' % (session['user_id'], '1')
 	cameras = get_full_data(sql_command)
+	viewed_cameras = session['viewed_cameras_info'].split(',')
 	for i, camera in enumerate(cameras):
 		camera['ID'] = zone_ids[camera['zone_id']] + '_' + str(i + 1)
 		camera['categoryId'] = zone_ids[camera['zone_id']]
+		if camera['camera_name'] in viewed_cameras: camera['selected'] = True
 	cameras.insert(0, {
 		'ID': "1",
 		'camera_name': "cameras",
