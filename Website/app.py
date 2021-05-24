@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, json, session, Response, json
 from responses import error_400_message, error_401_message, error_403_message, success_200_message
 import os, cv2, datetime, base64, pickle
 from datetime import timedelta
-from common import grid_setting_file, viewed_cameras_file
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
