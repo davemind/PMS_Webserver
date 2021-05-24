@@ -348,13 +348,24 @@ IVMS.Videos = function () {
 			text: 'Download Selected Videos',
 			onClick: function() {
 				var selected = grid.getSelectedRowsData();
+				var filePath = []
 				for(var i = 0; i < selected.length; i++){
-					var filePath = root_path + "/static" + selected[i].video_filename;
-					var splits = filePath.split('/');
-					$("#download").attr("href", filePath)
-					$("#download").attr("download", splits[splits.length-1])
-					document.getElementById('download').click();
+					filePath.push("static" + selected[i].video_filename);
 				}
+				$.ajax({
+					url: "/videos/zipDownload",
+					data: {'filePath': filePath.join(',')},
+					method: "POST",
+					error: function (result) {
+						alert("There is a Problem, Try Again!");			
+					},
+					success: function (result) {
+						result = JSON.parse(result)
+						$("#download").attr("href", root_path + '/' + result['fullPath'])
+						$("#download").attr("download", result['fileName'])
+						document.getElementById('download').click();
+					}
+				});
 				grid.clearSelection();
 			}
 		});

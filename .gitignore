@@ -1,7 +1,7 @@
 
 *.pyc
 # videos
-static/video
-Website/static/video
+Website/static/video/
+Website/static/temp_zip/
 VideoStreaming/bin/*.ts
 VideoStreaming/bin/*.m3u8

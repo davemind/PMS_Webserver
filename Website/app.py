@@ -2,11 +2,16 @@ from flask import Flask, render_template, request, json, session, Response, json
 from responses import error_400_message, error_401_message, error_403_message, success_200_message
 import os, cv2, datetime, base64, pickle
 from datetime import timedelta
+import zipfile
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=300)
 app.config['SESSION_PERMANENT'] = True
+
+video_temp_folder = 'static/temp_zip'
+if not os.path.isdir(video_temp_folder):
+	os.makedirs(video_temp_folder)
 
 ############################   backend   ############################
 from engine import log_in
@@ -367,6 +372,26 @@ def bk_GetAllAlarmCategory():
 	result = get_full_data(sql_command)
 	update_record(updated_sql_command, (1, session['user_email'], 0))
 	return json.dumps(result)
+
+@app.route('/videos/zipDownload', methods=['POST'])
+def bk_videos_zip_download():
+	files = request.form.get('filePath').split(',')
+	cur_time = datetime.datetime.now()
+	filename = video_temp_folder + '/' + 'videos(%04d-%02d-%02d %02d-%02d-%02d).zip' % (cur_time.year, cur_time.month, cur_time.day, cur_time.hour, cur_time.minute, cur_time.second)
+	f = zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED)
+	files_in_zip = []
+	for file in files:
+		if not os.path.isfile(file): continue
+		cur_file = cur_file0 = os.path.basename(file)
+		a, b = os.path.splitext(cur_file0)
+		i = 1
+		while cur_file in files_in_zip:
+			cur_file = a + "_" + str(i) + b
+			i += 1
+		files_in_zip.append(cur_file)
+		f.write(file, cur_file)
+	f.close()
+	return json.dumps({'fullPath': filename, 'fileName': os.path.basename(filename)})
 
 if __name__ == "__main__":
 	app.run(debug=True, host='0.0.0.0', port=5000, threaded=True)
