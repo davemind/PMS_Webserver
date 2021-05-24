@@ -87,6 +87,7 @@ $(function(){
 	});
    treeViewCameras = $("#treeViewCameras").dxTreeView({ 
         items: [{}],
+		selectByClick: true, 
         dataStructure: "plain",
         parentIdExpr: "categoryId",
         keyExpr: "ID",
