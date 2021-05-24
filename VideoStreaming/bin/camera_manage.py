@@ -13,7 +13,7 @@ cameras = get_full_data(sql_command)
 proc_dict = {}
 for camera in cameras:
 	if camera['state'] == 1:
-		command = 'gst-launch-1.0.exe rtspsrc protocols=tcp location="' + camera['camera_url'] + '" ! rtph264depay ! avdec_h264 ! videoconvert ! clockoverlay ! x264enc ! mpegtsmux ! hlssink location='\
+		command = 'gst-launch-1.0.exe rtspsrc protocols=tcp location="' + camera['camera_url'] + '" ! rtph264depay ! h264parse ! mpegtsmux ! hlssink location='\
 			+ camera['camera_name'] + '.%05d.ts playlist-location=' + camera['camera_name'] + '.m3u8'
 		proc = subprocess.Popen(command)
 		proc_dict[camera['id']] = proc
@@ -28,13 +28,13 @@ def playAllCamera():
 			if camera['id'] in proc_dict:
 				if proc_dict[camera['id']] is None:
 					command = 'gst-launch-1.0.exe rtspsrc protocols=tcp location="' + camera[
-						'camera_url'] + '" ! rtph264depay ! avdec_h264 ! videoconvert ! clockoverlay ! x264enc ! mpegtsmux ! hlssink location=' \
+						'camera_url'] + '" ! rtph264depay ! h264parse ! mpegtsmux ! hlssink location=' \
 							  + camera['camera_name'] + '.%05d.ts playlist-location=' + camera['camera_name'] + '.m3u8'
 					proc = subprocess.Popen(command)
 					proc_dict[camera['id']] = proc
 			else:
 				command = 'gst-launch-1.0.exe rtspsrc protocols=tcp location="' + camera[
-					'camera_url'] + '" ! rtph264depay ! avdec_h264 ! videoconvert ! clockoverlay ! x264enc ! mpegtsmux ! hlssink location=' \
+					'camera_url'] + '" ! rtph264depay ! h264parse ! mpegtsmux ! hlssink location=' \
 						  + camera['camera_name'] + '.%05d.ts playlist-location=' + camera['camera_name'] + '.m3u8'
 				proc = subprocess.Popen(command)
 				proc_dict[camera['id']] = proc
@@ -57,11 +57,11 @@ def playOneCamera():
 	camera_url = record[1]
 	if camera_id in proc_dict :
 		if proc_dict[camera_id] is None:
-			command = 'gst-launch-1.0.exe rtspsrc protocols=tcp location="' + camera_url + '" ! rtph264depay ! avdec_h264 ! videoconvert ! clockoverlay ! x264enc ! mpegtsmux ! hlssink location=' \
+			command = 'gst-launch-1.0.exe rtspsrc protocols=tcp location="' + camera_url + '" ! rtph264depay ! h264parse ! mpegtsmux ! hlssink location=' \
 					  + camera_name + '.%05d.ts playlist-location=' + camera_name + '.m3u8'
 			proc_dict[camera_id] = subprocess.Popen(command)
 	else :
-		command = 'gst-launch-1.0.exe rtspsrc protocols=tcp location="' + camera_url + '" ! rtph264depay ! avdec_h264 ! videoconvert ! clockoverlay ! x264enc ! mpegtsmux ! hlssink location=' \
+		command = 'gst-launch-1.0.exe rtspsrc protocols=tcp location="' + camera_url + '" ! rtph264depay ! h264parse ! mpegtsmux ! hlssink location=' \
 				  + camera_name + '.%05d.ts playlist-location=' + camera_name + '.m3u8'
 		proc_dict[camera_id] = subprocess.Popen(command)
 	return json.dumps({'code': 200})
