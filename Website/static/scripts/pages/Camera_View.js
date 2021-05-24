@@ -18,6 +18,7 @@ $(function(){
 	max_height = window.outerHeight - menu_area_height - title_area_height;
 	max_width = parseInt((window.outerWidth - 20) * 10 / 12) - 30;
 	rows = parseInt(localStorage.getItem('rows')); cols = parseInt(localStorage.getItem('cols'));
+	cameras_info = localStorage.getItem('cameras').split(',')
 	grid_setting();
 	
 	var form_grid = {
@@ -105,6 +106,17 @@ $(function(){
 				cameras_info.push(nodes[i].itemData.camera_name)
 			}
 			grid_setting();
+			localStorage.setItem('cameras', cameras_info.join(','))
+			$.ajax({
+				url: '/bk/viewedCameras',
+				method: 'PUT',
+				data: {'cameras': cameras_info.join(',')},
+				error: function (result) {
+					alert("There is a Problem, Try Again!");			
+				},
+				success: function (result) {
+				}
+			});	
 		}
 	});
 

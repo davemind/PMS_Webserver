@@ -91,6 +91,7 @@
 						localStorage.setItem('user_name', data['user_name'])
 						localStorage.setItem('rows', data['grid_setting_info'][0])
 						localStorage.setItem('cols', data['grid_setting_info'][1])
+						localStorage.setItem('cameras', data['viewed_cameras_info'])
 						if (data['message'] == 'admin'){
 							top.location="/User"
 						} else {

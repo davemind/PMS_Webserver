@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, json, session, Response, json
 from responses import error_400_message, error_401_message, error_403_message, success_200_message
 import os, cv2, datetime, base64, pickle
 from datetime import timedelta
-from common import grid_setting_file
+from common import grid_setting_file, viewed_cameras_file
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
@@ -11,6 +11,8 @@ app.config['SESSION_PERMANENT'] = True
 
 ############################   backend   ############################
 from engine import log_in
+from sql import get_one_record
+from sql import update_record
 @app.route('/bk/user/login', methods=['POST'])
 def bk_user_login():
 	user_name = request.form.get('user_name')
@@ -24,42 +26,37 @@ def bk_user_login():
 		session['user_id'] = id
 		session['user_email'] = email
 		session['user_name'] = result_dict['user_name']
-		if not os.path.isfile(grid_setting_file):
+		sql_command = 'select * from `grids` where `user_id` = %s'
+		num, record = get_one_record(sql_command, 1)
+		if num == 0:
+			sql_command = 'insert into `grids` (`user_id`, `rows`, `cols`) values (%s, %s, %s)'
+			update_record(sql_command, (session['user_id'], 2, 3))
 			session['grid_setting_info'] = [2, 3]
-			grid_setting_info = {session['user_name']: session['grid_setting_info']}
-			with open(grid_setting_file, 'wb') as file:
-				pickle.dump(grid_setting_info, file)
+			session['viewed_cameras_info'] = ''
 		else:
-			with open(grid_setting_file, 'rb') as file:
-				grid_setting_info = pickle.load(file)
-			if session['user_name'] not in grid_setting_info:
-				session['grid_setting_info'] = [2, 3]
-				grid_setting_info[session['user_name']] = session['grid_setting_info']
-				with open(grid_setting_file, 'wb') as file:
-					pickle.dump(grid_setting_info, file)
-			else:
-				session['grid_setting_info'] = grid_setting_info[session['user_name']]
+			session['grid_setting_info'] = record[1:3]
+			session['viewed_cameras_info'] = record[3] if record[3] is not None else ''
 		result_dict['grid_setting_info'] = session['grid_setting_info']
+		result_dict['viewed_cameras_info'] = session['viewed_cameras_info']
 	return json.dumps(result_dict)
-
-@app.route('/bk/gridSetting', methods=['Get'])
-def bk_grid_setting_get():
-	return json.dumps({'grid_setting_info': session['grid_setting_info']})
 
 @app.route('/bk/gridSetting', methods=['PUT'])
 def bk_grid_setting_update():
 	rows = request.form.get('rows')
 	cols = request.form.get('cols')
-	with open(grid_setting_file, 'rb') as file:
-		grid_setting_info = pickle.load(file)
 	session['grid_setting_info'] = [rows, cols]
-	grid_setting_info = {session['user_name']: session['grid_setting_info']}
-	with open(grid_setting_file, 'wb') as file:
-		pickle.dump(grid_setting_info, file)
+	sql_command = 'update `grids` set `rows` = %s, `cols` = %s WHERE `user_id` = %s'
+	update_record(sql_command, (rows, cols, session['user_id']))
 	return json.dumps({'grid_setting_info': session['grid_setting_info']})
 
-from sql import get_one_record
-from sql import update_record
+@app.route('/bk/viewedCameras', methods=['PUT'])
+def bk_viewed_cameras_update():
+	cameras = request.form.get('cameras')
+	session['viewed_cameras_info'] = cameras
+	sql_command = 'update `grids` set `cameras` = %s WHERE `user_id` = %s'
+	update_record(sql_command, (cameras, session['user_id']))
+	return json.dumps({'viewed_cameras_info': session['viewed_cameras_info']})
+
 def check_user_name_exists(user_name, user_id=None):
 	if user_id is None:
 		sql_command = 'select `id` from `tbl_admin` where `name` = %s'
