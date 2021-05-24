@@ -78,13 +78,14 @@ $(function () {
 			{
 				dataField: "id",
 				caption: "ID",
-				alignment: "left",
+                alignment: "center",
 				width: "20%",
 				editing: false
 			},
 			{
 				dataField: "name",
 				caption: "Zone Name",
+                alignment: "center",
 				validationRules: [{
 					type: "required",
 					message: "Zone Name is required"
@@ -225,6 +226,7 @@ $(function () {
 		columns: [
 			{
 				dataField: "camera_name",
+                alignment: "center",
 				caption: "Name",
 				allowEditing: false,
 			},

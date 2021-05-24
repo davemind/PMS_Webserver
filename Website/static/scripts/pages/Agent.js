@@ -73,6 +73,7 @@ SaleViewer.Customers = function () {
             columns: [
                 {
                     dataField: "name",
+                    alignment: "center",
 					validationRules: [{
 						type: "required",
 						message: "name is required"
@@ -80,7 +81,7 @@ SaleViewer.Customers = function () {
                 },
                 {
                     dataField: "email",
-                    alignment: "left",
+                    alignment: "center",
 					validationRules: [{
 						type: "required",
 						message: "email is required"
@@ -88,7 +89,7 @@ SaleViewer.Customers = function () {
                 },
                 {
                     dataField: "password",
-                    alignment: "left",
+                    alignment: "center",
 					editorOptions: {
 						mode: "password"
 					},
@@ -102,11 +103,12 @@ SaleViewer.Customers = function () {
                     dataField: "register_date",
                     dataType: "date",
 					format: "dd/MM/yyyy",
-                    alignment: "left",
+                    alignment: "center",
 					allowEditing: false
                 },
                 {
                     dataField: "role_id",
+                    alignment: "center",
                     caption: "Role",
 					lookup: {
 						dataSource: [],
