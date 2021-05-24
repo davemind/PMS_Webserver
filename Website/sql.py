@@ -55,28 +55,6 @@ def get_full_data(sql_command, row_headers=None):
 	db.close()
 	return json_data
 
-def get_Gates():
-	db, cur = get_db_cursor()
-	sql_command = 'select `loc_id`, `loc_name` from `location_sites`'
-	num = cur.execute(sql_command)
-	row_headers = [x[0] for x in cur.description]  # this will extract row headers
-	rv = cur.fetchall()
-	location_sites_json_data = []
-	for result in rv:
-		location_sites_json_data.append(dict(zip(row_headers, result)))
-
-	sql_command = 'select * from `gates`'
-	num = cur.execute(sql_command)
-	row_headers = [x[0] for x in cur.description]  # this will extract row headers
-	rv = cur.fetchall()
-	gates_json_data = []
-	for result in rv:
-		gates_json_data.append(dict(zip(row_headers, result)))
-
-	cur.close()
-	db.close()
-	return {'location_sites': location_sites_json_data, 'gates': gates_json_data}
-
 def add_administrator(admin_pwd):
 	db, cur = get_db_cursor()
 	sql_command = 'select `name` from `users` where `admin` = 1'

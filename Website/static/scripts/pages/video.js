@@ -5,9 +5,11 @@ window.IVMS = window.IVMS || {};
 window.jsPDF = window.jspdf.jsPDF;
 applyPlugin(window.jsPDF);
 
+
 IVMS.Videos = function () {
 	var $t_fixed;
 	var positionFlag = false;
+	var camera_names, camera_locations, zone_names;
 	function PatchHeaders(e) {
 		var $header = e.element.find(".dx-datagrid-headers").detach();
 		var $panel = e.element.find(".dx-datagrid-header-panel").detach();
@@ -193,58 +195,7 @@ IVMS.Videos = function () {
 				}
 			}]
 	},
-	form_grid = {
-		formData: {"start_date": null,"end_date": new Date()},
-		labelLocation: "left",
-		minColWidth: 200,
-		colCount: 2,
-		items: [
-			{
-				dataField: "start_date",
-				editorType: "dxDateBox",
-				editorOptions: { 
-					type: "date"
-				},
-				validationRules: [{
-					type: "required",
-					message: "Data Range is required"
-				}]
-			},
-			{
-				dataField: "end_date",
-				editorType: "dxDateBox",
-				editorOptions: { 
-					type: "date"
-				},
-				label: {
-					text: "",
-					showing: false
-				},
-				validationRules: [{
-					type: "required",
-					message: "Data Range is required"
-				}]
-			},
-			{
-				dataField: "camera_name",
-				label: {
-					text: "Camera Name"
-				},
-			},
-			{
-				dataField: "camera_location",
-				label: {
-					text: "Camera Location"
-				},
-			},
-			{
-				dataField: "zone_name",
-				label: {
-					text: "Zone Name"
-				},
-			},
-		]			
-	},
+	form_grid,
 	popupOptions_custom_search = {
 		width: 800,
 		height: 350,
@@ -441,7 +392,7 @@ IVMS.Videos = function () {
         var grid = gridContainer.data("dxDataGrid");
 		grid.beginCustomLoading();
 		$.ajax({
-            url: "/bk/Video",
+            url: "/bk/Video/first",
 			data: {'timeline': "Today"},
 			error: function (result) {
 				grid.endCustomLoading();
@@ -449,8 +400,81 @@ IVMS.Videos = function () {
 			},
 			success: function (result) {
 				var res = JSON.parse(result);
-				grid.option("dataSource", { store: res});
+				grid.option("dataSource", { store: res['cameras']});
+				camera_names = res['camera_names'];
+				camera_locations = res['camera_locations'];
+				zone_names = res['zone_names'];
 				grid.endCustomLoading();
+				form_grid = {
+					formData: {"start_date": null,"end_date": new Date()},
+					labelLocation: "left",
+					minColWidth: 200,
+					colCount: 2,
+					items: [
+						{
+							dataField: "start_date",
+							editorType: "dxDateBox",
+							editorOptions: { 
+								type: "date"
+							},
+							validationRules: [{
+								type: "required",
+								message: "Data Range is required"
+							}]
+						},
+						{
+							dataField: "end_date",
+							editorType: "dxDateBox",
+							editorOptions: { 
+								type: "date"
+							},
+							label: {
+								text: "",
+								showing: false
+							},
+							validationRules: [{
+								type: "required",
+								message: "Data Range is required"
+							}]
+						},
+						{
+							dataField: "camera_name",
+							label: {
+								text: "Camera Name"
+							},
+							editorType: "dxSelectBox",
+							editorOptions: { 
+								items: camera_names,
+								searchEnabled: true,
+								value: ""
+							},
+						},
+						{
+							dataField: "camera_location",
+							label: {
+								text: "Camera Location"
+							},
+							editorType: "dxSelectBox",
+							editorOptions: { 
+								items: camera_locations,
+								searchEnabled: true,
+								value: ""
+							},
+						},
+						{
+							dataField: "zone_name",
+							label: {
+								text: "Zone Name"
+							},
+							editorType: "dxSelectBox",
+							editorOptions: { 
+								items: zone_names,
+								searchEnabled: true,
+								value: ""
+							},
+						},
+					]
+				};
 			}
 		});	
     };
