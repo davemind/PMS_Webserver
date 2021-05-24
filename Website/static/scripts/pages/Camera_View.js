@@ -95,6 +95,8 @@ $(function(){
 		height: max_height * 0.55,
     }).dxTreeView("instance");
 	$('#CameraViewButton').dxButton({
+		stylingMode: "contained",
+		type: "default",
 		text: 'Camera View',
 		width: 150,
 		onClick: function() {
