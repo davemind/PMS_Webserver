@@ -210,8 +210,8 @@ def bk_zone_delete():
 	return json.dumps(success_200_message('ok'))
 
 ############################   menu   ############################
-usual_menu_items = ['Camera', 'Camera_View', 'Video', 'Log_out']
-usual_menu_texts = ['Camera', 'Camera_View', 'Video', 'Log out']
+usual_menu_items = ['Setting', 'Camera_View', 'Video', 'Log_out']
+usual_menu_texts = ['Setting', 'Camera_View', 'Video', 'Log out']
 admin_menu_items = ['User', 'Camera', 'Video', 'Log_out']
 admin_menu_texts = ['User', 'Camera', 'Video', 'Log out']
 @app.route('/bk/Menu', methods=['GET'])
@@ -305,7 +305,6 @@ def load_page(param):
 		return render_template('index.html')
 	if session['admin']:
 		if param in admin_menu_items:
-			if param == 'Camera': return render_template('Camera_admin.html')
 			return render_template('{}.html'.format(param))
 	else:
 		if param in usual_menu_items: return render_template('{}.html'.format(param))
@@ -314,6 +313,10 @@ def load_page(param):
 @app.route('/User')
 def fr_User():
 	return load_page('User')
+
+@app.route('/Setting')
+def fr_Setting():
+	return load_page('Setting')
 
 @app.route('/Camera')
 def fr_Camera():

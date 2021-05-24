@@ -68,7 +68,7 @@ SaleViewer.Customers = function () {
             columns: [
                 {
                     dataField: "camera_name",
-					alignment: "left",
+                    alignment: "center",
 					validationRules: [{
 						type: "required",
 						message: "camera_name is required"
@@ -77,7 +77,7 @@ SaleViewer.Customers = function () {
                 },
                 {
                     dataField: "camera_url",
-					alignment: "left",
+                    alignment: "center",
 					validationRules: [{
 						type: "required",
 						message: "camera_url is required"
@@ -85,7 +85,7 @@ SaleViewer.Customers = function () {
                 },
                 {
                     dataField: "state",
-					alignment: "left",
+                    alignment: "center",
 					validationRules: [{
 						type: "required",
 						message: "state is required"
@@ -99,7 +99,7 @@ SaleViewer.Customers = function () {
                 },
                 {
                     dataField: "location",
-					alignment: "left",
+                    alignment: "center",
 					validationRules: [{
 						type: "required",
 						message: "location is required"
@@ -109,7 +109,7 @@ SaleViewer.Customers = function () {
                 {
                     dataField: "user_id",
 					caption: "User",
-					alignment: "left",
+                    alignment: "center",
 					validationRules: [{
 						type: "required",
 						message: "state is required"

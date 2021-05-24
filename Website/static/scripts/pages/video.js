@@ -28,7 +28,7 @@ IVMS.Videos = function () {
 				mode: "row",
 				allowAdding: false,
 				allowUpdating: false,
-				allowDeleting: true,
+				allowDeleting: false,
 				useIcons: true
 			},
 			selection: {
@@ -73,9 +73,6 @@ IVMS.Videos = function () {
                     dataField: "thumb_name",
 					caption: "Video Thumb",
                     alignment: "center",
-					
-					allowFiltering: false,
-					allowSorting: false,
 					cellTemplate: function (container, options) {
 						$("<div>")
 							.append($("<img>", { "src": "/static" + options.value }))
@@ -85,6 +82,7 @@ IVMS.Videos = function () {
                 {
                     dataField: "start_time",
 					caption: "Start Time",
+                    alignment: "center",
                     dataType: "datetime",
 					format: "dd/MM/yy HH:mm",
                 }, {
@@ -96,14 +94,17 @@ IVMS.Videos = function () {
 				{
 					dataField: "camera_name",
 					caption: "Camera Name",
+                    alignment: "center",
 				},
 				{
 					dataField: "location",
 					caption: "Camera Location",
+                    alignment: "center",
 				},
 				{
 					dataField: "zone_name",
 					caption: "Zone",
+                    alignment: "center",
 				},
                 {
 					type: "buttons",

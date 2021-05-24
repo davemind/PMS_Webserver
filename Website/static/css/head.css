@@ -102,3 +102,7 @@
     border: 1px solid transparent;
     border-radius: 4px;
 }
+
+.dx-datagrid-text-content.dx-text-content-alignment-left.dx-header-filter-indicator {
+	color: blue;
+}
