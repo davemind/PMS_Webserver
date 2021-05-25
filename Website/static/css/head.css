@@ -105,4 +105,6 @@
 
 .dx-datagrid-text-content.dx-text-content-alignment-left.dx-header-filter-indicator {
 	color: blue;
+	font-weight: 600;
+	
 }

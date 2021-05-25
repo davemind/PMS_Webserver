@@ -92,7 +92,7 @@ $(function () {
 				}]
 			},
 		],
-		showBorders: false,
+		showBorders: true,
 		//columnAutoWidth: false,
 		showColumnLines: true,
 		showRowLines: false,
@@ -266,7 +266,7 @@ $(function () {
                 groupIndex: 0
 			},
 		],
-		showBorders: false,
+		showBorders: true,
 		//columnAutoWidth: false,
 		showColumnLines: true,
 		showRowLines: false,
