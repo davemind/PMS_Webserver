@@ -212,12 +212,14 @@ def bk_zone_delete():
 ############################   menu   ############################
 usual_menu_items = ['Setting', 'Camera_View', 'Video']
 usual_menu_texts = ['Setting', 'Camera_View', 'Video']
-admin_menu_items = ['Dashboard', 'User', 'Camera', 'Video']
-admin_menu_texts = ['Dashboard', 'User', 'Camera', 'Video']
+admin_menu_items = ['User', 'Camera', 'Video']
+admin_menu_texts = ['User', 'Camera', 'Video']
 
 user_menus = [{ "title" : "Camera_View", "icon" : "icon-camcorder", "url":"fr_Camera_View"}, { "title" : "Video", "icon" : "icon-screen-desktop","url":"fr_Video"}, { "title" : "Setting", "icon" : "icon-settings", "url":"fr_Setting"}]
 
-admin_menus = [{ "title" : "Dashboard", "icon" : "icon-home", "url":"fr_test"}, { "title" : "User", "icon" : "icon-user", "url":"fr_User"}, { "title" : "Camera", "icon" : "icon-camcorder", "url":"fr_Camera"}, { "title" : "Video", "icon" : "icon-screen-desktop", "url":"fr_Video"}]
+#admin_menus = [{ "title" : "Dashboard", "icon" : "icon-home", "url":"fr_test"}, { "title" : "User", "icon" : "icon-user", "url":"fr_User"}, { "title" : "Camera", "icon" : "icon-camcorder", "url":"fr_Camera"}, { "title" : "Video", "icon" : "icon-screen-desktop", "url":"fr_Video"}]
+
+admin_menus = [{ "title" : "User", "icon" : "icon-user", "url":"fr_User"}, { "title" : "Camera", "icon" : "icon-camcorder", "url":"fr_Camera"}, { "title" : "Video", "icon" : "icon-screen-desktop", "url":"fr_Video"}]
 
 @app.route('/bk/Menu', methods=['GET'])
 def get_menu_item():
