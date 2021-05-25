@@ -350,7 +350,7 @@ def load_page(param):
 		return render_template('index.html')
 	if session['admin']:
 		if param in admin_menu_items:
-			return render_template('{}.html'.format(param))
+			return render_template('{}.html'.format(param), menu_items = admin_menus, selected=param)
 	else:
 		if param in usual_menu_items: return render_template('{}.html'.format(param), menu_items = user_menus, selected=param)
 	return render_template('empty.html')
