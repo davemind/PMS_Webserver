@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, json, session, Response, jsonify
+from flask import Flask, render_template, request, json, session, Response, jsonify, url_for
 from responses import error_400_message, error_401_message, error_403_message, success_200_message
 import os, cv2, datetime, base64, pickle
 from datetime import timedelta
@@ -214,6 +214,11 @@ usual_menu_items = ['Setting', 'Camera_View', 'Video', 'Log_out']
 usual_menu_texts = ['Setting', 'Camera_View', 'Video', 'Log out']
 admin_menu_items = ['User', 'Camera', 'Video', 'Log_out']
 admin_menu_texts = ['User', 'Camera', 'Video', 'Log out']
+
+user_menus = [{ "title" : "Camera_View", "icon" : "icon-camcorder", "url":"fr_Camera_View"}, { "title" : "Video", "icon" : "icon-screen-desktop","url":"fr_Video"}, { "title" : "Setting", "icon" : "icon-settings", "url":"fr_Setting"}]
+
+admin_menus = [{ "title" : "Dashboard", "icon" : "icon-home", "url":"fr_test"}, { "title" : "User", "icon" : "icon-user", "url":"fr_User"}, { "title" : "Camera_View", "icon" : "icon-camcorder", "url":"fr_Camera_View"}, { "title" : "Video", "icon" : "icon-screen-desktop","url":"fr_Video"}, { "title" : "Setting", "icon" : "icon-settings", "url":"fr_Setting"}]
+
 @app.route('/bk/Menu', methods=['GET'])
 def get_menu_item():
 	if session.get('admin') is None:
@@ -339,6 +344,7 @@ def bk_Video_first():
 def main_register():
 	return render_template('index.html')
 
+	
 def load_page(param):
 	if session.get('admin') is None:
 		return render_template('index.html')
@@ -346,9 +352,13 @@ def load_page(param):
 		if param in admin_menu_items:
 			return render_template('{}.html'.format(param))
 	else:
-		if param in usual_menu_items: return render_template('{}.html'.format(param))
+		if param in usual_menu_items: return render_template('{}.html'.format(param), menu_items = user_menus, selected=param)
 	return render_template('empty.html')
 
+@app.route('/test')
+def fr_test():
+	return render_template('dashboard.html', menu_items = user_menus, selected='Dashboard')
+	
 @app.route('/User')
 def fr_User():
 	return load_page('User')

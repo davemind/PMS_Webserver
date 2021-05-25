@@ -19,7 +19,6 @@ $(function () {
         indicatingSet: ['#90ba58', '#eeba69', '#a37182'],
         gradientSet: ['#78b6d9', '#eeba69']
     });
-	document.getElementById("username").textContent = 'Welcome ' + localStorage.getItem('user_name') + '!';
 });
 
 function myTimer() {
@@ -29,14 +28,14 @@ function myTimer() {
 		},
 		success: function (result) {
 			if (result == "0") {
-				var alarm_circle = document.getElementById("alarm_circle");
-				alarm_circle.setAttribute("class", "fa fa-circle noti_none");
-				$(".num").text("");
+				//var alarm_circle = document.getElementById("alarm_circle");
+				//alarm_circle.setAttribute("class", "fa fa-circle noti_none");
+				//$(".num").text("");
 			}
 			else {
-				var alarm_circle = document.getElementById("alarm_circle");
-				alarm_circle.setAttribute("class", "fa fa-circle noti_show");
-				$(".num").text(result);
+				//var alarm_circle = document.getElementById("alarm_circle");
+				//alarm_circle.setAttribute("class", "fa fa-circle noti_show");
+				//$(".num").text(result);
 			}
 		}
 	});
