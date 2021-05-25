@@ -45,7 +45,7 @@ IVMS.Videos = function () {
             },
 			pager: {
 				showPageSizeSelector: true,
-				allowedPageSizes: [10, 20, 30, 40, 50, "all"],
+				allowedPageSizes: [10, 20, 30, 40, 50],
 				showInfo: true,
 			},
 			filterRow: {
@@ -155,11 +155,6 @@ IVMS.Videos = function () {
 				//console.log("RowRemoved");
 			},
 			onContentReady: function (e) {
-				PatchHeaders(e);
-				var el = e.component.element().find('.dx-page-size').last();  
-					el.click(function(){  
-					e.component.pageSize(0);  
-				});
             }
         },
 		 
