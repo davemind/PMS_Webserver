@@ -121,6 +121,7 @@ SaleViewer.Customers = function () {
 					}]
                 },
 			],
+			showBorders: true,
             showColumnLines: false,
             showRowLines: false,
 			width:700,

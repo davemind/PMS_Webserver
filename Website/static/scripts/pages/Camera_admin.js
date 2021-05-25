@@ -122,7 +122,7 @@ SaleViewer.Customers = function () {
 					width: "10%",
                 },
  			],
-			showBorders: false,
+			showBorders: true,
 			columnAutoWidth:false,
             showColumnLines: true,
             showRowLines: false,
