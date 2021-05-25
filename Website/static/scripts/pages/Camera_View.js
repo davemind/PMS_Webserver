@@ -2,7 +2,7 @@
 
 window.SaleViewer = window.SaleViewer || {};
 var cameras, st_index;
-var title_area_height, menu_area_height, max_height, max_width;
+var top_bar_height, menu_area_width, max_height, max_width;
 var camera_num, rows, cols;
 var treeViewCameras;
 var cameras_info;
@@ -13,10 +13,10 @@ var canvas = document.createElement('canvas');
 var context = canvas.getContext('2d');
 
 $(function(){
-	title_area_height = 0;//$('#title_area').height() + 15;
-	menu_area_height = $('#menu_area').height();
-	max_height = window.outerHeight - menu_area_height - title_area_height;
-	max_width = parseInt((window.outerWidth - 20) * 10 / 12) - 30;
+	top_bar_height = $('#top_bar').height();
+	menu_area_width = $('#menu').width();
+	max_height = window.innerHeight - top_bar_height - 30;
+	max_width = parseInt((window.outerWidth - menu_area_width) * 10 / 12) - 70;
 	rows = parseInt(localStorage.getItem('rows')); cols = parseInt(localStorage.getItem('cols'));
 	cameras_info = localStorage.getItem('cameras').split(',')
 	grid_setting();
