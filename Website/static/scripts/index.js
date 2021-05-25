@@ -2,6 +2,11 @@
 
 window.SaleViewer = window.SaleViewer || {};
 
+$(function () {
+	SaleViewer.criteria = "";
+	SaleViewer.baseApiUrl = "/bk/";
+});
+
 SaleViewer.loadData = function (data, callback, category) {
     $.ajax({
         url: SaleViewer.baseApiUrl + category,
