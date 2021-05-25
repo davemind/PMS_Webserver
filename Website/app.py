@@ -217,7 +217,7 @@ admin_menu_texts = ['User', 'Camera', 'Video', 'Log out']
 
 user_menus = [{ "title" : "Camera_View", "icon" : "icon-camcorder", "url":"fr_Camera_View"}, { "title" : "Video", "icon" : "icon-screen-desktop","url":"fr_Video"}, { "title" : "Setting", "icon" : "icon-settings", "url":"fr_Setting"}]
 
-admin_menus = [{ "title" : "Dashboard", "icon" : "icon-home", "url":"fr_test"}, { "title" : "User", "icon" : "icon-user", "url":"fr_User"}, { "title" : "Camera_View", "icon" : "icon-camcorder", "url":"fr_Camera_View"}, { "title" : "Video", "icon" : "icon-screen-desktop","url":"fr_Video"}, { "title" : "Setting", "icon" : "icon-settings", "url":"fr_Setting"}]
+admin_menus = [{ "title" : "Dashboard", "icon" : "icon-home", "url":"fr_test"}, { "title" : "User", "icon" : "icon-user", "url":"fr_User"}, { "title" : "Camera_View", "icon" : "icon-camcorder", "url":"fr_Camera_View"}, { "title" : "Video", "icon" : "icon-screen-desktop", "url":"fr_Video"}, { "title" : "Setting", "icon" : "icon-settings", "url":"fr_Setting"}]
 
 @app.route('/bk/Menu', methods=['GET'])
 def get_menu_item():
@@ -355,9 +355,9 @@ def load_page(param):
 		if param in usual_menu_items: return render_template('{}.html'.format(param), menu_items = user_menus, selected=param)
 	return render_template('empty.html')
 
-@app.route('/test')
+@app.route('/Dashboard')
 def fr_test():
-	return render_template('dashboard.html', menu_items = user_menus, selected='Dashboard')
+	return load_page('Dashboard')
 	
 @app.route('/User')
 def fr_User():
