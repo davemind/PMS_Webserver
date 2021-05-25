@@ -132,10 +132,11 @@ IVMS.Videos = function () {
 			groupPanel: {
 				visible: true
 			},
-			showBorders: false,
-			columnAutoWidth:false,
+			showBorders: true,
+			//columnAutoWidth:false,
             showColumnLines: true,
             showRowLines: false,
+			//showColumnHeaders: true,
 			hoverStateEnabled: true,			
 			onRowRemoving: function(e) {
 				$.ajax({
