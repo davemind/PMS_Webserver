@@ -30,12 +30,12 @@ function myTimer() {
 			if (result == "0") {
 				//var alarm_circle = document.getElementById("alarm_circle");
 				//alarm_circle.setAttribute("class", "fa fa-circle noti_none");
-				//$(".num").text("");
+				$("#alarm_count").text("");
 			}
 			else {
 				//var alarm_circle = document.getElementById("alarm_circle");
 				//alarm_circle.setAttribute("class", "fa fa-circle noti_show");
-				//$(".num").text(result);
+				$("#alarm_count").text(result);
 			}
 		}
 	});
