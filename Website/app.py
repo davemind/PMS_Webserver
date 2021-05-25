@@ -210,10 +210,10 @@ def bk_zone_delete():
 	return json.dumps(success_200_message('ok'))
 
 ############################   menu   ############################
-usual_menu_items = ['Setting', 'Camera_View', 'Video', 'Log_out']
-usual_menu_texts = ['Setting', 'Camera_View', 'Video', 'Log out']
-admin_menu_items = ['User', 'Camera', 'Video', 'Log_out']
-admin_menu_texts = ['User', 'Camera', 'Video', 'Log out']
+usual_menu_items = ['Setting', 'Camera_View', 'Video']
+usual_menu_texts = ['Setting', 'Camera_View', 'Video']
+admin_menu_items = ['Dashboard', 'User', 'Camera', 'Video']
+admin_menu_texts = ['Dashboard', 'User', 'Camera', 'Video']
 
 user_menus = [{ "title" : "Camera_View", "icon" : "icon-camcorder", "url":"fr_Camera_View"}, { "title" : "Video", "icon" : "icon-screen-desktop","url":"fr_Video"}, { "title" : "Setting", "icon" : "icon-settings", "url":"fr_Setting"}]
 
