@@ -1,87 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-	<title>Camera Manage</title>
-	<script src="static/js/polyfill.min.js"></script>
-	<script src="static/js/exceljs.min.js"></script>
-	<script src="static/js/FileSaver.min.js"></script>
-	
-	<!--<link href="/static/css/dx.common.css" rel="stylesheet"> -->
-	<!--<link href="/static/css/dx.light.css" rel="stylesheet"> -->
-	<!--<link href="/static/css/site.css" rel="stylesheet"> -->
-	<link rel="stylesheet/less" type="text/css" href="/static/css/site.less" />
-	<script src="static/js/less.js" ></script>
-	<!-- Font Awesome -->
-    <link rel="stylesheet" href="/static/Login_v12/css/font-awesome.min.css">
-	<link rel="stylesheet" href="/static/css/head.css" />
+{% extends 'base.html' %}
+{% block title %} 
+Camera
+{% endblock %}
+{% block content %}
 
-    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/20.2.4/css/dx.common.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/20.2.4/css/dx.light.css" />
-	
-	<script src="static/js/jquery-3.5.1.min.js"></script>
-	<script src="static/js/dx.all.js"></script>
-	<script src="static/scripts/index.js"></script>
-	<script src="static/scripts/pages/topmenu.js"></script>
-	<script>
-		$(function () {
-			SaleViewer.criteria = "";
-			SaleViewer.baseApiUrl = "/bk/";
-		});
-	</script>
-	
 	<script src="static/scripts/pages/Camera_admin.js"></script>
 
-</head>
-<body id="salesviewer">
-    <div class="page-content-wrapper">
-        <div class="page-content-push"></div>
-        <div id="header">
-            <div class="content">
-                <a class="logo indent" href="../"></a>
-                
-                <div class="menu">
-                    <div id="menu"></div>
-                    <div style="float:left;">
-                        <a class="btn" onclick="alarm_list()">
-                            <i class="fa fa-bell noti_show" style="font-size:1.2em;"></i>
-                            <span id="alarm_circle" class="fa fa-circle noti_none"></span>
-                            <span class="num noti_show"></span>
-                        </a>
-                    </div>
-                    <div style="float:right;">
-						<a class="btn" id='username' style='color: #fff;'></a>
-                    </div>
-                </div>
-                <script>
+	<!-------------------------------Render Body Part---------------------------------------------------------------------------------->
+	<link rel="stylesheet" href="static/css/products.css" />
 
-                    var activePageId = "" || "Camera",
-                    topMenu = new SaleViewer.TopMenu($("#menu"), activePageId, "");
-                    topMenu.init();
-                
-                </script>
-                </div>
-
-        </div>
-		<!-------------------------------Render Body Part---------------------------------------------------------------------------------->
-		<link rel="stylesheet" href="static/css/products.css" />
-
-		<div class="white">
-			<div class="content">
-				<div class="page" style="display: flex; align-items: center; justify-content: center;">
-					<div class="layout-box" >
-						<h3 class="indent">Camera</h3>
-						<div>
-							<div id="grid" class="products"></div>
-						</div>
-
+	<div class="white">
+		<div class="content">
+			<div class="page" style="display: flex; align-items: center; justify-content: center;">
+				<div class="layout-box" >
+					<h3 class="indent">Camera</h3>
+					<div>
+						<div id="grid" class="products"></div>
 					</div>
+
 				</div>
 			</div>
 		</div>
-    </div>
-	<div id="noti_popup"></div>
-</body>
-</html>
+	</div>
+{% endblock %}
+
