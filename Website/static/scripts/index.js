@@ -50,7 +50,7 @@ var myVar = setInterval(function () { myTimer() }, 5000);
 
 var popup = null;
 function alarm_list() {
-	if ($(".num").text() == "") {
+	if ($("#alarm_count").text() == "") {
 		return;
 	}
 	$.ajax({
@@ -61,7 +61,7 @@ function alarm_list() {
 		success: function (result) {
 			var alarm_circle = document.getElementById("alarm_circle");
 			alarm_circle.setAttribute("class", "fa fa-circle noti_none");
-			$(".num").text("");
+			$("#alarm_count").text("");
 			var gridOptions = {
 				dataSource: {
 					store: JSON.parse(result)
