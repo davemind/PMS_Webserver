@@ -290,17 +290,18 @@ def bk_Video():
 	timeline = request.args.get('timeline')
 	if timeline is not None:
 		if timeline == 'All':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(session['user_id'])
 		elif timeline == 'Today':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE DATE(`start_time`) = DATE(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE DATE(`start_time`) = DATE(NOW()) AND cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(session['user_id'])
 		elif timeline == 'This Week':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE WEEK(`start_time`) = WEEK(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE WEEK(`start_time`) = WEEK(NOW()) and YEAR(`start_time`) = YEAR(NOW()) AND cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(session['user_id'])
 		elif timeline == 'This Month':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE MONTH(`start_time`) = MONTH(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE MONTH(`start_time`) = MONTH(NOW()) and YEAR(`start_time`) = YEAR(NOW()) AND cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(session['user_id'])
 		elif timeline == 'This Year':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE YEAR(`start_time`) = YEAR(NOW()) AND cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(session['user_id'])
 	else:
-		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE {} ORDER BY `start_time` DESC;'.format(request.args.get('where_cmd'))
+		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE {} AND cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(request.args.get('where_cmd'), session['user_id'])
+	print(sql_command)
 	cameras = get_full_data(sql_command)
 	return json.dumps(cameras)
 
@@ -309,17 +310,18 @@ def bk_Video_first():
 	timeline = request.args.get('timeline')
 	if timeline is not None:
 		if timeline == 'All':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(session['user_id'])
 		elif timeline == 'Today':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE DATE(`start_time`) = DATE(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE DATE(`start_time`) = DATE(NOW()) AND cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(session['user_id'])
 		elif timeline == 'This Week':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE WEEK(`start_time`) = WEEK(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE WEEK(`start_time`) = WEEK(NOW()) and YEAR(`start_time`) = YEAR(NOW()) AND cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(session['user_id'])
 		elif timeline == 'This Month':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE MONTH(`start_time`) = MONTH(NOW()) and YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE MONTH(`start_time`) = MONTH(NOW()) and YEAR(`start_time`) = YEAR(NOW()) AND cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(session['user_id'])
 		elif timeline == 'This Year':
-			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE YEAR(`start_time`) = YEAR(NOW()) ORDER BY `start_time` DESC;'
+			sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE YEAR(`start_time`) = YEAR(NOW()) AND cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(session['user_id'])
 	else:
-		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE {} ORDER BY `start_time` DESC;'.format(request.args.get('where_cmd'))
+		sql_command = 'SELECT videos.*, cameras.`camera_name`, cameras.`location`, zones.`name` AS zone_name FROM (SELECT * FROM `videos`) videos LEFT JOIN cameras ON videos.`camera_id` = cameras.`id` LEFT JOIN zones ON cameras.`zone_id` = zones.`id` WHERE {} AND cameras.`user_id` = {} ORDER BY `start_time` DESC;'.format(request.args.get('where_cmd'), session['user_id'])
+	print(sql_command)
 	cameras = get_full_data(sql_command)
 	# camera_names
 	sql_command = 'SELECT DISTINCT `camera_name` FROM `cameras`;'
