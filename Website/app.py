@@ -385,6 +385,10 @@ def fr_Video():
 def Log_out():
 	session.clear()
 	return render_template('index.html')
+	
+@app.route('/Lock_screen')
+def Lock_screen():
+	return render_template('lock.html')
 
 ############################   Alarm   ############################
 @app.route('/api/CameraDisconnect', methods=['POST'])
